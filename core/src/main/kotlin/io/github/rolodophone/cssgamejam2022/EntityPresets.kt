@@ -31,7 +31,7 @@ class EntityPresets(private val game: CSSGameJam2022) {
 		}
 	}
 
-	fun movingBarrier(x: Float, startY: Float, minY: Float, maxY: Float, startVelocity: Float,) = game.engine.entity {
+	fun movingBarrier(minX: Float, maxX: Float, minY: Float, maxY: Float) = game.engine.entity {
 		with<InfoComp> {
 			name = "MovingBarrier"
 			tags = mutableSetOf(InfoComp.Tag.GROUND)
@@ -42,8 +42,6 @@ class EntityPresets(private val game: CSSGameJam2022) {
 			body = game.world.body {
 				type = BodyDef.BodyType.KinematicBody
 				box(width, height, Vector2(width/2f, height/2f))
-				position.set(x, startY)
-				linearVelocity.set(0f, startVelocity)
 				userData = this@entity.entity
 			}
 		}
@@ -51,9 +49,34 @@ class EntityPresets(private val game: CSSGameJam2022) {
 			texture = game.textureAssets.barrier
 		}
 		with<KinematicComp> {
-			minX = x
+			this.minX = minX
 			this.minY = minY
-			maxX = x
+			this.maxX = maxX
+			this.maxY = maxY
+		}
+	}
+
+	fun movingPlatform(minX: Float, maxX: Float, minY: Float, maxY: Float) = game.engine.entity {
+		with<InfoComp> {
+			name = "Platform"
+			tags = mutableSetOf(InfoComp.Tag.GROUND)
+		}
+		with<BoxBodyComp> {
+			width = 2f
+			height = 0.3f
+			body = game.world.body {
+				type = BodyDef.BodyType.KinematicBody
+				box(width, height, Vector2(width / 2f, height / 2f))
+				userData = this@entity.entity
+			}
+		}
+		with<TextureComp> {
+			texture = game.textureAssets.platform
+		}
+		with<KinematicComp> {
+			this.minX = minX
+			this.minY = minY
+			this.maxX = maxX
 			this.maxY = maxY
 		}
 	}

@@ -25,6 +25,7 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 	lateinit var background: Entity
 	lateinit var barriers: List<Entity>
 	lateinit var movingBarriers: List<Entity>
+	lateinit var movingPlatforms: List<Entity>
 	lateinit var platforms: List<Entity>
 	lateinit var saws: List<Entity>
 
@@ -113,11 +114,15 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 			entityPresets.barrier(0f, 7.15f),
 			entityPresets.barrier(1.25f, 4.15f),
 			entityPresets.barrier(14.05f, 3.35f),
-			entityPresets.barrier(10.4f, 1.4f),
 			entityPresets.barrier(15.8f, 7.15f),
 		)
 		movingBarriers = listOf(
-			entityPresets.movingBarrier(12.6f, 5.5f, 5.5f, 7f, 1f),
+			entityPresets.movingBarrier(12.6f, 12.6f, 5.5f, 7f),
+			entityPresets.movingBarrier(7.7f, 14.35f,  0.35f, 0.35f),
+		)
+		movingPlatforms = listOf(
+			entityPresets.movingPlatform(4f, 6f, 2f, 2f),
+			entityPresets.movingPlatform(3.8f, 3.8f, 5.5f, 7.3f),
 		)
 		platforms = listOf(
 			entityPresets.platform(0f, 0f),
@@ -128,9 +133,7 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 			entityPresets.platform(12f, 0f),
 			entityPresets.platform(1.5f, 3.8f),
 			entityPresets.platform(0.25f, 8.7f),
-			entityPresets.platform(5.8f, 2f),
 			entityPresets.platform(6.8f, 4.5f),
-			entityPresets.platform(3.8f, 6.9f),
 			entityPresets.platform(12f, 3f),
 			entityPresets.platform(13.75f, 8.7f),
 			entityPresets.platform(13.6f, 6.7f),
@@ -144,7 +147,7 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 		)
 
 		playerSys = PlayerSys(this, player)
-		box2DSys = Box2DSys(game.world, movingBarriers)
+		box2DSys = Box2DSys(game.world)
 		game.engine.addSystem(playerSys)
 		game.engine.addSystem(box2DSys)
 
@@ -156,16 +159,20 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 	}
 
 	override fun render(delta: Float) {
-		if (waitingForRestart && TimeUtils.timeSinceMillis(timeDied) >= 2000L) {
+		if (waitingForRestart && TimeUtils.timeSinceMillis(timeDied) >= 500L) {
 			waitingForRestart = false
 			restartLevel()
 		}
+
+		if (player.getComp(BoxBodyComp.mapper).y < -0.7f) die()
 	}
 
 	fun die() {
-		timeDied = TimeUtils.millis()
-		waitingForRestart = true
-		pauseGame()
+		if (!waitingForRestart) {
+			timeDied = TimeUtils.millis()
+			waitingForRestart = true
+			pauseGame()
+		}
 	}
 
 	fun restartLevel() {
@@ -185,6 +192,22 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 					setTransform(1.5f, 0.5f, 0f)
 					setLinearVelocity(0f, 0f)
 					isAwake = true
+				}
+				movingBarriers[0].getComp(BoxBodyComp.mapper).body.apply {
+					setTransform(12.6f, 5.5f, 0f)
+					setLinearVelocity(0f, 1f)
+				}
+				movingBarriers[1].getComp(BoxBodyComp.mapper).body.apply {
+					setTransform(7.7f, 0.35f, 0f)
+					setLinearVelocity(1.8f, 0f)
+				}
+				movingPlatforms[0].getComp(BoxBodyComp.mapper).body.apply {
+					setTransform(4f,2f, 0f)
+					setLinearVelocity(1f, 0f)
+				}
+				movingPlatforms[1].getComp(BoxBodyComp.mapper).body.apply {
+					setTransform(3.8f, 5.5f, 0f)
+					setLinearVelocity(0f, 1f)
 				}
 			}
 		}

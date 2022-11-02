@@ -1,29 +1,32 @@
 package io.github.rolodophone.cssgamejam2022.sys
 
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.EntitySystem
+import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.physics.box2d.World
 import io.github.rolodophone.cssgamejam2022.comp.BoxBodyComp
 import io.github.rolodophone.cssgamejam2022.comp.KinematicComp
 import io.github.rolodophone.cssgamejam2022.getComp
+import ktx.ashley.allOf
 
 class Box2DSys(
-	private val world: World,
-	private val movingBarriers: List<Entity>
-): EntitySystem(10) {
+	private val world: World
+): IteratingSystem(allOf(BoxBodyComp::class, KinematicComp::class).get(), 10) {
 	override fun update(deltaTime: Float) {
 		world.step(deltaTime, 6, 2)
 
-		// handle kinematic barriers
-		for (movingBarrier in movingBarriers) {
-			val boxBodyComp = movingBarrier.getComp(BoxBodyComp.mapper)
-			val kinematicComp = movingBarrier.getComp(KinematicComp.mapper)
+		// process kinematic entities
+		if (entities != null) super.update(deltaTime)
+	}
 
-			if (boxBodyComp.x < kinematicComp.minX || boxBodyComp.x > kinematicComp.maxX ||
-				boxBodyComp.y < kinematicComp.minY || boxBodyComp.y > kinematicComp.maxY) {
+	override fun processEntity(entity: Entity, deltaTime: Float) {
+		val boxBodyComp = entity.getComp(BoxBodyComp.mapper)
+		val kinematicComp = entity.getComp(KinematicComp.mapper)
 
-				boxBodyComp.body.setLinearVelocity(-boxBodyComp.body.linearVelocity.x, -boxBodyComp.body.linearVelocity.y)
-			}
+		if (boxBodyComp.x < kinematicComp.minX || boxBodyComp.x > kinematicComp.maxX) {
+			boxBodyComp.body.setLinearVelocity(-boxBodyComp.body.linearVelocity.x, boxBodyComp.body.linearVelocity.y)
+		}
+		if (boxBodyComp.y < kinematicComp.minY || boxBodyComp.y > kinematicComp.maxY) {
+			boxBodyComp.body.setLinearVelocity(boxBodyComp.body.linearVelocity.x, -boxBodyComp.body.linearVelocity.y)
 		}
 	}
 }
