@@ -10,12 +10,13 @@ class PlayerSys(player: Entity): EntitySystem() {
 
 	var movingLeft = false
 	var movingRight = false
+	var onGround = true
 
 	override fun update(deltaTime: Float) {
-		if (movingLeft) {
+		if (movingLeft && onGround) {
 			playerBody.applyLinearImpulse(-0.2f, 0f, 0f, 0f, true)
 		}
-		if (movingRight) {
+		if (movingRight && onGround) {
 			playerBody.applyLinearImpulse(0.2f, 0f, 0f, 0f, true)
 		}
 	}
@@ -36,6 +37,15 @@ class PlayerSys(player: Entity): EntitySystem() {
 	}
 
 	fun jump() {
-		playerBody.applyLinearImpulse(0f, 10f, 0f, 0f, true)
+		if (playerBody.linearVelocity.y == 0f) {
+			playerBody.applyLinearImpulse(0f, 10f, 0f, 0f, true)
+
+			//extra push in direction of travel
+			if (movingLeft) playerBody.applyLinearImpulse(-1f, 0f, 0f, 0f, true)
+			if (movingRight) playerBody.applyLinearImpulse(1f, 0f, 0f, 0f, true)
+
+			movingLeft = false
+			movingRight = false
+		}
 	}
 }

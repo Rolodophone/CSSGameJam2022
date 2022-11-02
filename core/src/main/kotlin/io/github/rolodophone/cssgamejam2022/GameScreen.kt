@@ -70,9 +70,15 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 				width = 0.4f
 				height = 0.7f
 				body = game.world.body {
-					box(width, height, Vector2(width/2f, height/2f))
 					type = BodyDef.BodyType.DynamicBody
+					fixedRotation = true
 					position.set(1.5f, 0.5f)
+
+					box(width, height, Vector2(width/2f, height/2f))
+					box(width, 0.2f, Vector2(width/2f, 0f)) { // foot sensor
+						isSensor = true
+						userData = 0
+					}
 				}
 			}
 			with<TextureComp> {
@@ -81,9 +87,8 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 		}
 
 		val playerSys = PlayerSys(player)
-
 		game.engine.addSystem(playerSys)
-
 		Gdx.input.inputProcessor = GameInputProcessor(playerSys)
+		game.world.setContactListener(GameContactListener(playerSys))
 	}
 }
