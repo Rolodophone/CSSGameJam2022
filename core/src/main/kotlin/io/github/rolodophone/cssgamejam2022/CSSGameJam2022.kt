@@ -19,6 +19,11 @@ import ktx.box2d.createWorld
 import ktx.graphics.use
 import kotlin.math.min
 
+const val WORLD_WIDTH = 16f
+const val WORLD_HEIGHT = 9f
+const val WORLD_WIDTH_HALF = 8f
+const val WORLD_HEIGHT_HALF = 4.5f
+
 class CSSGameJam2022 : KtxGame<KtxScreen>() {
 	lateinit var textureAssets: TextureAssets
 
@@ -35,14 +40,18 @@ class CSSGameJam2022 : KtxGame<KtxScreen>() {
 	var dt = Float.POSITIVE_INFINITY
 
 	override fun create() {
+		Gdx.graphics.setFullscreenMode(Gdx.graphics.displayMode)
+
 		textureAssets = TextureAssets()
 
-		camera = OrthographicCamera(16f, 9f)
+		camera = OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT)
+		camera.translate(WORLD_WIDTH_HALF, WORLD_HEIGHT_HALF)
+		camera.update()
 		viewport = ScreenViewport(camera)
 		viewport.unitsPerPixel = 1/120f
 
 		Box2D.init()
-		world = createWorld(gravity = Vector2(0f, -10f))
+		world = createWorld(gravity = Vector2(0f, -20f))
 		box2DDebugRenderer = Box2DDebugRenderer()
 
 		engine = Engine()
@@ -57,10 +66,6 @@ class CSSGameJam2022 : KtxGame<KtxScreen>() {
 		clearScreen(0f ,0f, 0f)
 
 		dt = min(Gdx.graphics.deltaTime, 0.1f)
-
-		spriteBatch.use {
-			it.draw(textureAssets.ktxLogo, 100f, 160f)
-		}
 
 		engine.update(dt)
 
