@@ -27,12 +27,13 @@ class GameInputProcessor(
 		}
 
 		//game
-		if (keycode in setOf(Keys.A, Keys.D, Keys.W, Keys.R)) {
+		if (keycode in setOf(Keys.A, Keys.D, Keys.W, Keys.R, Keys.NUMPAD_0)) {
 			when (keycode) {
 				Keys.A -> playerSys.moveLeft()
 				Keys.D -> playerSys.moveRight()
 				Keys.W -> playerSys.jump()
 				Keys.R -> playerSys.restartLevel()
+				Keys.NUMPAD_0 -> playerSys.nextLevel()
 			}
 
 			return true

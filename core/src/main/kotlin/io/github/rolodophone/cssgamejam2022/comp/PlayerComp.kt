@@ -13,6 +13,10 @@ class PlayerComp: Component, Pool.Poolable {
 	var movingRight = false
 	var onGround = true
 	var numGroundsTouching = 0
+		set(value) {
+			print(value)
+			field = value
+		}
 
 	override fun reset() {
 		movingLeft = false

@@ -41,10 +41,8 @@ class GameContactListener(
 			}
 
 			when {
-				otherEntity.hasTag(Tag.SAW) -> {
-					gameScreen.die()
-				}
-				otherEntity.hasTag(Tag.DOOR) -> gameScreen.nextLevel()
+				otherEntity.hasTag(Tag.SAW) -> gameScreen.scheduleRestartLevel()
+				otherEntity.hasTag(Tag.DOOR) -> gameScreen.scheduleNextLevel()
 			}
 		}
 	}

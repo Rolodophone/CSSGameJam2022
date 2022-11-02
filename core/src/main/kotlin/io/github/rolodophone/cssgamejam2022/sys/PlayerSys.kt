@@ -54,7 +54,6 @@ class PlayerSys(private val gameScreen: GameScreen, player: Entity): EntitySyste
 		}
 	}
 
-	fun restartLevel() {
-		gameScreen.restartLevel()
-	}
+	fun restartLevel() = gameScreen.restartLevel()
+	fun nextLevel() = gameScreen.nextLevel()
 }
