@@ -1,4 +1,4 @@
-package cssgamejam2022
+package io.github.rolodophone.cssgamejam2022
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
@@ -11,14 +11,18 @@ import ktx.assets.toInternalFile
 import ktx.graphics.use
 
 class CSSGameJam2022 : KtxGame<KtxScreen>() {
+    lateinit var textureAssets: TextureAssets
+
     override fun create() {
-        addScreen(FirstScreen())
+        textureAssets = TextureAssets()
+
+        addScreen(FirstScreen(this))
         setScreen<FirstScreen>()
     }
 }
 
-class FirstScreen : KtxScreen {
-    private val image = Texture("logo.png".toInternalFile(), true).apply { setFilter(Linear, Linear) }
+class FirstScreen(private val game: CSSGameJam2022) : KtxScreen {
+    private val image = game.textureAssets.ktxLogo
     private val batch = SpriteBatch()
 
     override fun render(delta: Float) {
@@ -29,7 +33,6 @@ class FirstScreen : KtxScreen {
     }
 
     override fun dispose() {
-        image.disposeSafely()
         batch.disposeSafely()
     }
 }
