@@ -4,8 +4,10 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
+import com.badlogic.gdx.utils.TimeUtils
 import io.github.rolodophone.cssgamejam2022.comp.BoxBodyComp
 import io.github.rolodophone.cssgamejam2022.comp.InfoComp
+import io.github.rolodophone.cssgamejam2022.comp.PlayerComp
 import io.github.rolodophone.cssgamejam2022.comp.TextureComp
 import io.github.rolodophone.cssgamejam2022.sys.PlayerSys
 import ktx.app.KtxScreen
@@ -15,8 +17,20 @@ import ktx.box2d.body
 import ktx.box2d.box
 
 class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
-	lateinit var player: Entity
 	val entityPresets = EntityPresets(game)
+
+	lateinit var player: Entity
+	lateinit var door: Entity
+	lateinit var background: Entity
+	lateinit var barriers: List<Entity>
+	lateinit var platforms: List<Entity>
+	lateinit var saws: List<Entity>
+
+	lateinit var playerSys: PlayerSys
+
+	var currentLevel = 1
+	var timeDied = 0L
+	var waitingForRestart = false
 
 	override fun show() {
 		player = game.engine.entity {
@@ -30,7 +44,6 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 				body = game.world.body {
 					type = BodyDef.BodyType.DynamicBody
 					fixedRotation = true
-					position.set(1.5f, 0.5f)
 
 					box(width, height, Vector2(width/2f, height/2f))
 					box(width, 0.2f, Vector2(width/2f, 0f)) { // foot sensor
@@ -44,9 +57,10 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 			with<TextureComp> {
 				texture = game.textureAssets.player
 			}
+			with<PlayerComp>()
 		}
 
-		val door = game.engine.entity {
+		door = game.engine.entity {
 			with<InfoComp> {
 				name = "Door"
 				tags = mutableSetOf(InfoComp.Tag.DOOR)
@@ -68,7 +82,7 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 			}
 		}
 
-		val background = game.engine.entity {
+		background = game.engine.entity {
 			with<InfoComp> {
 				name = "Background"
 				tags = mutableSetOf(InfoComp.Tag.BACKGROUND)
@@ -90,7 +104,7 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 			}
 		}
 
-		val barriers = listOf(
+		barriers = listOf(
 			entityPresets.barrier(0f, 0.35f),
 			entityPresets.barrier(0f, 3.75f),
 			entityPresets.barrier(0f, 7.15f),
@@ -101,7 +115,7 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 			entityPresets.barrier(15.8f, 7.15f),
 		)
 
-		val platforms = listOf(
+		platforms = listOf(
 			entityPresets.platform(0f, 0f),
 			entityPresets.platform(2f, 0f),
 			entityPresets.platform(4f, 0f),
@@ -118,16 +132,51 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 			entityPresets.platform(13.6f, 6.7f),
 		)
 
-		val saws = listOf(
+		saws = listOf(
 			entityPresets.saw(-0.3f, 2.5f),
 			entityPresets.saw(-0.3f, 5.9f),
 			entityPresets.saw(5.2f, 8.7f),
 			entityPresets.saw(15.7f, 4.9f),
 		)
 
-		val playerSys = PlayerSys(player)
+		playerSys = PlayerSys(this, player)
 		game.engine.addSystem(playerSys)
+
 		Gdx.input.inputProcessor = GameInputProcessor(playerSys)
-		game.world.setContactListener(GameContactListener(playerSys))
+
+		game.world.setContactListener(GameContactListener(player.getComp(PlayerComp.mapper)))
+	}
+
+	override fun render(delta: Float) {
+		if (waitingForRestart && TimeUtils.timeSinceMillis(timeDied) >= 2000L) {
+			waitingForRestart = false
+			restartLevel()
+		}
+	}
+
+	fun die() {
+		timeDied = TimeUtils.millis()
+		waitingForRestart = true
+	}
+
+	fun restartLevel() {
+		initLevel(currentLevel)
+	}
+
+	fun nextLevel() {
+		currentLevel++
+		initLevel(currentLevel)
+	}
+
+	private fun initLevel(level: Int) {
+		when (level) {
+			1 -> {
+				player.getComp(BoxBodyComp.mapper).body.apply {
+					setTransform(1.5f, 0.5f, 0f)
+					isAwake = true
+				}
+				player.getComp(PlayerComp.mapper).reset()
+			}
+		}
 	}
 }

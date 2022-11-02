@@ -58,8 +58,10 @@ class CSSGameJam2022 : KtxGame<KtxScreen>() {
 		val renderSys = RenderSys(camera, spriteBatch)
 		engine.addSystem(renderSys)
 
-		addScreen(GameScreen(this))
+		val gameScreen = GameScreen(this)
+		addScreen(gameScreen)
 		setScreen<GameScreen>()
+		gameScreen.restartLevel()
 	}
 
 	override fun render() {

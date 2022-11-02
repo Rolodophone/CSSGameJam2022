@@ -2,23 +2,22 @@ package io.github.rolodophone.cssgamejam2022.sys
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
+import io.github.rolodophone.cssgamejam2022.GameScreen
 import io.github.rolodophone.cssgamejam2022.comp.BoxBodyComp
+import io.github.rolodophone.cssgamejam2022.comp.PlayerComp
 import io.github.rolodophone.cssgamejam2022.getComp
 
 const val PLAYER_MAX_SPEED_X = 7f
 
-class PlayerSys(player: Entity): EntitySystem() {
+class PlayerSys(private val gameScreen: GameScreen, player: Entity): EntitySystem() {
 	private val playerBody = player.getComp(BoxBodyComp.mapper).body
-
-	var movingLeft = false
-	var movingRight = false
-	var onGround = true
+	private val playerComp = player.getComp(PlayerComp.mapper)
 
 	override fun update(deltaTime: Float) {
-		if (movingLeft && onGround) {
+		if (playerComp.movingLeft && playerComp.onGround) {
 			playerBody.applyLinearImpulse(-0.2f, 0f, 0f, 0f, true)
 		}
-		if (movingRight && onGround) {
+		if (playerComp.movingRight && playerComp.onGround) {
 			playerBody.applyLinearImpulse(0.2f, 0f, 0f, 0f, true)
 		}
 
@@ -31,27 +30,31 @@ class PlayerSys(player: Entity): EntitySystem() {
 	}
 
 	fun moveLeft() {
-		movingRight = false
-		movingLeft = true
+		playerComp.movingRight = false
+		playerComp.movingLeft = true
 	}
 
 	fun moveRight() {
-		movingLeft = false
-		movingRight = true
+		playerComp.movingLeft = false
+		playerComp.movingRight = true
 	}
 
 	fun stop() {
-		movingLeft = false
-		movingRight = false
+		playerComp.movingLeft = false
+		playerComp.movingRight = false
 	}
 
 	fun jump() {
-		if (onGround) {
+		if (playerComp.onGround) {
 			playerBody.applyLinearImpulse(0f, 10f, 0f, 0f, true)
 
 			//extra push in direction of travel
-			if (movingLeft) playerBody.applyLinearImpulse(-1f, 0f, 0f, 0f, true)
-			if (movingRight) playerBody.applyLinearImpulse(1f, 0f, 0f, 0f, true)
+			if (playerComp.movingLeft) playerBody.applyLinearImpulse(-1f, 0f, 0f, 0f, true)
+			if (playerComp.movingRight) playerBody.applyLinearImpulse(1f, 0f, 0f, 0f, true)
 		}
+	}
+
+	fun restartLevel() {
+		gameScreen.restartLevel()
 	}
 }

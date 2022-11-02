@@ -9,5 +9,15 @@ class PlayerComp: Component, Pool.Poolable {
 		val mapper = mapperFor<PlayerComp>()
 	}
 
-	override fun reset() {}
+	var movingLeft = false
+	var movingRight = false
+	var onGround = true
+	var numGroundsTouching = 0
+
+	override fun reset() {
+		movingLeft = false
+		movingRight = false
+		onGround = true
+		numGroundsTouching = 0
+	}
 }

@@ -6,17 +6,15 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse
 import com.badlogic.gdx.physics.box2d.ContactListener
 import com.badlogic.gdx.physics.box2d.Manifold
 import io.github.rolodophone.cssgamejam2022.comp.InfoComp
-import io.github.rolodophone.cssgamejam2022.sys.PlayerSys
+import io.github.rolodophone.cssgamejam2022.comp.PlayerComp
 
-class GameContactListener(private val playerSys: PlayerSys): ContactListener {
-	private var numGroundsTouching = 0
-
+class GameContactListener(private val playerComp: PlayerComp): ContactListener {
 	override fun beginContact(contact: Contact) {
 		if (contact.fixtureA.userData == 0 && (contact.fixtureB.body.userData as Entity).hasTag(InfoComp.Tag.GROUND) ||
 				contact.fixtureB.userData == 0 && (contact.fixtureA.body.userData as Entity).hasTag(InfoComp.Tag.GROUND)) {
 			//player foot contacted platform
-			numGroundsTouching++
-			playerSys.onGround = true
+			playerComp.numGroundsTouching++
+			playerComp.onGround = true
 		}
 	}
 
@@ -24,8 +22,8 @@ class GameContactListener(private val playerSys: PlayerSys): ContactListener {
 		if (contact.fixtureA.userData == 0 && (contact.fixtureB.body.userData as Entity).hasTag(InfoComp.Tag.GROUND) ||
 				contact.fixtureB.userData == 0 && (contact.fixtureA.body.userData as Entity).hasTag(InfoComp.Tag.GROUND)) {
 			//player foot left platform
-			numGroundsTouching--
-			if (numGroundsTouching == 0) playerSys.onGround = false
+			playerComp.numGroundsTouching--
+			if (playerComp.numGroundsTouching == 0) playerComp.onGround = false
 		}
 	}
 
