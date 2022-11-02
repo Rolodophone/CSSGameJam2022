@@ -2,11 +2,8 @@ package io.github.rolodophone.cssgamejam2022
 
 import com.badlogic.ashley.core.Engine
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Box2D
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
@@ -17,7 +14,6 @@ import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ktx.box2d.createWorld
-import ktx.graphics.use
 import kotlin.math.min
 
 const val WORLD_WIDTH = 16f
@@ -51,13 +47,13 @@ class CSSGameJam2022 : KtxGame<KtxScreen>() {
 		viewport = ScreenViewport(camera)
 		viewport.unitsPerPixel = 1/120f
 
+		spriteBatch = SpriteBatch()
+
 		Box2D.init()
 		world = createWorld(gravity = Vector2(0f, -20f))
 		box2DDebugRenderer = Box2DDebugRenderer()
 
 		engine = Engine()
-
-		spriteBatch = SpriteBatch()
 
 		val renderSys = RenderSys(camera, spriteBatch)
 		engine.addSystem(renderSys)

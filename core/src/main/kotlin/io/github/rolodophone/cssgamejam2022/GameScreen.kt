@@ -5,16 +5,14 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
 import io.github.rolodophone.cssgamejam2022.comp.BoxBodyComp
+import io.github.rolodophone.cssgamejam2022.comp.InfoComp
 import io.github.rolodophone.cssgamejam2022.comp.TextureComp
 import io.github.rolodophone.cssgamejam2022.sys.PlayerSys
 import ktx.app.KtxScreen
 import ktx.ashley.entity
-import ktx.ashley.getSystem
 import ktx.ashley.with
 import ktx.box2d.body
 import ktx.box2d.box
-import ktx.box2d.fixture
-import javax.swing.Box
 
 class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 	lateinit var player: Entity
@@ -22,6 +20,10 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 
 	override fun show() {
 		player = game.engine.entity {
+			with<InfoComp> {
+				name = "Player"
+				tags = mutableSetOf(InfoComp.Tag.PLAYER)
+			}
 			with<BoxBodyComp> {
 				width = 0.4f
 				height = 0.7f
@@ -33,8 +35,10 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 					box(width, height, Vector2(width/2f, height/2f))
 					box(width, 0.2f, Vector2(width/2f, 0f)) { // foot sensor
 						isSensor = true
-						userData = 0
+						userData = 0 //0 means player foot sensor
 					}
+
+					userData = this@entity.entity
 				}
 			}
 			with<TextureComp> {
@@ -43,15 +47,19 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 		}
 
 		val door = game.engine.entity {
+			with<InfoComp> {
+				name = "Door"
+				tags = mutableSetOf(InfoComp.Tag.DOOR)
+			}
 			with<BoxBodyComp> {
 				width = 0.45f
 				height = 0.75f
 				body = game.world.body {
-					position.set(14f, 7f)
+					position.set(14.5f, 7f)
 					box(width, height, Vector2(width/2f, height/2f)) {
 						isSensor = true
-						userData = 1
 					}
+					userData = this@entity.entity
 				}
 			}
 			with<TextureComp> {
@@ -61,6 +69,10 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 		}
 
 		val background = game.engine.entity {
+			with<InfoComp> {
+				name = "Background"
+				tags = mutableSetOf(InfoComp.Tag.BACKGROUND)
+			}
 			with<BoxBodyComp> {
 				width = WORLD_WIDTH
 				height = WORLD_HEIGHT
@@ -69,6 +81,7 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 					box(width, height, Vector2(width/2f, height/2f)) {
 						isSensor = true //disable collision
 					}
+					userData = this@entity.entity
 				}
 			}
 			with<TextureComp> {
@@ -102,6 +115,7 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 			entityPresets.platform(3.8f, 6.9f),
 			entityPresets.platform(12f, 3f),
 			entityPresets.platform(13.75f, 8.7f),
+			entityPresets.platform(13.6f, 6.7f),
 		)
 
 		val saws = listOf(
