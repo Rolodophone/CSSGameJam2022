@@ -10,7 +10,7 @@ fun <C: Component> Entity.getCompOrNull(mapper: ComponentMapper<C>) = this[mappe
 
 fun <C: Component> Entity.getComp(mapper: ComponentMapper<C>): C {
 	val component = this[mapper]
-	requireNotNull(component) { "Component not found in entity $this" }
+	requireNotNull(component) { "Component not found in entity ${repr()}" }
 	return component
 }
 

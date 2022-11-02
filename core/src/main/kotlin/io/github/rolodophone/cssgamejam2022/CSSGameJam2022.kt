@@ -36,6 +36,8 @@ class CSSGameJam2022 : KtxGame<KtxScreen>() {
 
 	var dt = Float.POSITIVE_INFINITY
 
+	var stepWorld = false
+
 	override fun create() {
 		Gdx.graphics.setFullscreenMode(Gdx.graphics.displayMode)
 
@@ -70,9 +72,9 @@ class CSSGameJam2022 : KtxGame<KtxScreen>() {
 		dt = min(Gdx.graphics.deltaTime, 0.1f)
 
 		engine.update(dt)
-
+		currentScreen.render(dt)
 		box2DDebugRenderer.render(world, camera.combined)
-		world.step(dt, 6, 2)
+		if (stepWorld) world.step(dt, 6, 2)
 	}
 }
 

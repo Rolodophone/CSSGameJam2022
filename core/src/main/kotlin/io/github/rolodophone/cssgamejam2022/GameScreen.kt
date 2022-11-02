@@ -144,7 +144,7 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 
 		Gdx.input.inputProcessor = GameInputProcessor(playerSys)
 
-		game.world.setContactListener(GameContactListener(player.getComp(PlayerComp.mapper)))
+		game.world.setContactListener(GameContactListener(this))
 	}
 
 	override fun render(delta: Float) {
@@ -157,6 +157,7 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 	fun die() {
 		timeDied = TimeUtils.millis()
 		waitingForRestart = true
+		game.stepWorld = false
 	}
 
 	fun restartLevel() {
@@ -171,12 +172,15 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 	private fun initLevel(level: Int) {
 		when (level) {
 			1 -> {
+				player.getComp(PlayerComp.mapper).reset()
 				player.getComp(BoxBodyComp.mapper).body.apply {
 					setTransform(1.5f, 0.5f, 0f)
+					setLinearVelocity(0f, 0f)
 					isAwake = true
 				}
-				player.getComp(PlayerComp.mapper).reset()
 			}
 		}
+
+		game.stepWorld = true
 	}
 }
