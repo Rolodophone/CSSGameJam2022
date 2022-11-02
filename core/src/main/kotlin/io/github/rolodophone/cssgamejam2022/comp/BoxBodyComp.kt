@@ -12,5 +12,14 @@ class BoxBodyComp: Component, Pool.Poolable {
 
 	lateinit var body: Body
 
+	val x: Float
+		get() = body.position.x
+	val y: Float
+		get() = body.position.y
+
+	//only set once for each entity
+	var width = 1f
+	var height = 1f
+
 	override fun reset() {}
 }

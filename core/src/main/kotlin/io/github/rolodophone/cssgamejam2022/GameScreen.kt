@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
 import io.github.rolodophone.cssgamejam2022.comp.BoxBodyComp
+import io.github.rolodophone.cssgamejam2022.comp.TextureComp
 import io.github.rolodophone.cssgamejam2022.sys.PlayerSys
 import ktx.app.KtxScreen
 import ktx.ashley.entity
@@ -20,10 +21,13 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 	override fun show() {
 		val ground = game.engine.entity {
 			with<BoxBodyComp> {
+				width = WORLD_WIDTH
+				height = 0.5f
 				body = game.world.body {
-					box(WORLD_WIDTH, 0.5f, Vector2(WORLD_WIDTH_HALF, 0.25f)) {
+					box(width, height, Vector2(width/2f, height/2f)) {
 						friction = 0.7f
 					}
+					position.setZero()
 				}
 			}
 		}
@@ -31,22 +35,31 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 		val platforms = listOf(
 			game.engine.entity {
 				with<BoxBodyComp> {
+					width = 2.5f
+					height = 0.5f
 					body = game.world.body {
-						box(2.5f, 0.5f, Vector2(3.25f, 3.25f))
+						box(width, height, Vector2(width/2f, height/2f))
+						position.set(2.5f, 3f)
 					}
 				}
 			},
 			game.engine.entity {
 				with<BoxBodyComp> {
+					width = 2.5f
+					height = 0.5f
 					body = game.world.body {
-						box(2.5f, 0.5f, Vector2(8.75f, 2f))
+						box(width, height, Vector2(width/2f, height/2f))
+						position.set(7.5f, 1.5f)
 					}
 				}
 			},
 			game.engine.entity {
 				with<BoxBodyComp> {
+					width = 2.5f
+					height = 0.5f
 					body = game.world.body {
-						box(2.5f, 0.5f, Vector2(11f, 4.5f))
+						box(width, height, Vector2(width/2f, height/2f))
+						position.set(9f, 4f)
 					}
 				}
 			}
@@ -54,10 +67,16 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 
 		player = game.engine.entity {
 			with<BoxBodyComp> {
+				width = 0.4f
+				height = 0.7f
 				body = game.world.body {
-					box(0.4f, 0.7f, Vector2(2f, 0.8f))
+					box(width, height, Vector2(width/2f, height/2f))
 					type = BodyDef.BodyType.DynamicBody
+					position.set(1.5f, 0.5f)
 				}
+			}
+			with<TextureComp> {
+				texture = game.textureAssets.player
 			}
 		}
 

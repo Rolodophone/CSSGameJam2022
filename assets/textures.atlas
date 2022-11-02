@@ -1,13 +1,13 @@
 
 textures.png
-size: 512, 256
+size: 16, 32
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
-logo
+player
   rotate: false
   xy: 2, 2
-  size: 440, 160
-  orig: 440, 160
+  size: 8, 14
+  orig: 8, 14
   offset: 0, 0
   index: -1

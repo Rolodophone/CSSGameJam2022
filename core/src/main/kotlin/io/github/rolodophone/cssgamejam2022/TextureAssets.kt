@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 class TextureAssets {
     private val textureAtlas = TextureAtlas(Gdx.files.internal("textures.atlas"))
 
-    val ktxLogo = loadAtlasRegion("logo")
+    val player = loadAtlasRegion("player")
 
     private fun loadAtlasRegion(name: String): TextureAtlas.AtlasRegion {
         val atlasRegion = textureAtlas.findRegion(name)

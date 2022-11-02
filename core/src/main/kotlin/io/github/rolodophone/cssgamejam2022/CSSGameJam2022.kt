@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.Box2D
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.viewport.ScreenViewport
+import io.github.rolodophone.cssgamejam2022.sys.RenderSys
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
@@ -57,6 +58,9 @@ class CSSGameJam2022 : KtxGame<KtxScreen>() {
 		engine = Engine()
 
 		spriteBatch = SpriteBatch()
+
+		val renderSys = RenderSys(camera, spriteBatch)
+		engine.addSystem(renderSys)
 
 		addScreen(GameScreen(this))
 		setScreen<GameScreen>()
