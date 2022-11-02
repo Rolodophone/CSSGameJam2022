@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.Box2D
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.viewport.ScreenViewport
+import io.github.rolodophone.cssgamejam2022.sys.DebugSys
 import io.github.rolodophone.cssgamejam2022.sys.RenderSys
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
@@ -31,12 +32,12 @@ class CSSGameJam2022 : KtxGame<KtxScreen>() {
 	lateinit var box2DDebugRenderer: Box2DDebugRenderer
 
 	lateinit var engine: Engine
+	lateinit var debugSys: DebugSys
+	lateinit var renderSys: RenderSys
 
 	lateinit var spriteBatch: SpriteBatch
 
 	var dt = Float.POSITIVE_INFINITY
-
-	var stepWorld = false
 
 	override fun create() {
 		Gdx.graphics.setFullscreenMode(Gdx.graphics.displayMode)
@@ -56,14 +57,14 @@ class CSSGameJam2022 : KtxGame<KtxScreen>() {
 		box2DDebugRenderer = Box2DDebugRenderer()
 
 		engine = Engine()
-
-		val renderSys = RenderSys(camera, spriteBatch)
+		debugSys = DebugSys(this)
+		renderSys = RenderSys(camera, spriteBatch)
+		engine.addSystem(debugSys)
 		engine.addSystem(renderSys)
 
 		val gameScreen = GameScreen(this)
 		addScreen(gameScreen)
 		setScreen<GameScreen>()
-		gameScreen.restartLevel()
 	}
 
 	override fun render() {
@@ -73,8 +74,6 @@ class CSSGameJam2022 : KtxGame<KtxScreen>() {
 
 		engine.update(dt)
 		currentScreen.render(dt)
-		box2DDebugRenderer.render(world, camera.combined)
-		if (stepWorld) world.step(dt, 6, 2)
 	}
 }
 

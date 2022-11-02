@@ -1,12 +1,10 @@
 package io.github.rolodophone.cssgamejam2022.sys
 
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.ashley.systems.SortedIteratingSystem
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.utils.viewport.ScreenViewport
 import io.github.rolodophone.cssgamejam2022.comp.BoxBodyComp
 import io.github.rolodophone.cssgamejam2022.comp.TextureComp
 import io.github.rolodophone.cssgamejam2022.getComp
@@ -19,7 +17,7 @@ class RenderSys(
 ): SortedIteratingSystem(
 	allOf(BoxBodyComp::class, TextureComp::class).get(),
 	compareBy { it.getComp(TextureComp.mapper).z },
-	30
+	0
 ) {
 	private val sprite = Sprite()
 

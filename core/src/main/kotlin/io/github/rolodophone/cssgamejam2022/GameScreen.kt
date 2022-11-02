@@ -9,6 +9,7 @@ import io.github.rolodophone.cssgamejam2022.comp.BoxBodyComp
 import io.github.rolodophone.cssgamejam2022.comp.InfoComp
 import io.github.rolodophone.cssgamejam2022.comp.PlayerComp
 import io.github.rolodophone.cssgamejam2022.comp.TextureComp
+import io.github.rolodophone.cssgamejam2022.sys.Box2DSys
 import io.github.rolodophone.cssgamejam2022.sys.PlayerSys
 import ktx.app.KtxScreen
 import ktx.ashley.entity
@@ -23,10 +24,12 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 	lateinit var door: Entity
 	lateinit var background: Entity
 	lateinit var barriers: List<Entity>
+	lateinit var movingBarriers: List<Entity>
 	lateinit var platforms: List<Entity>
 	lateinit var saws: List<Entity>
 
 	lateinit var playerSys: PlayerSys
+	lateinit var box2DSys: Box2DSys
 
 	var currentLevel = 1
 	var timeDied = 0L
@@ -111,10 +114,11 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 			entityPresets.barrier(1.25f, 4.15f),
 			entityPresets.barrier(14.05f, 3.35f),
 			entityPresets.barrier(10.4f, 1.4f),
-			entityPresets.barrier(10.6f, 6.5f),
 			entityPresets.barrier(15.8f, 7.15f),
 		)
-
+		movingBarriers = listOf(
+			entityPresets.movingBarrier(12.6f, 5.5f, 5.5f, 7f, 1f),
+		)
 		platforms = listOf(
 			entityPresets.platform(0f, 0f),
 			entityPresets.platform(2f, 0f),
@@ -130,8 +134,8 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 			entityPresets.platform(12f, 3f),
 			entityPresets.platform(13.75f, 8.7f),
 			entityPresets.platform(13.6f, 6.7f),
+			entityPresets.platform(9.5f, 6f)
 		)
-
 		saws = listOf(
 			entityPresets.saw(-0.3f, 2.5f),
 			entityPresets.saw(-0.3f, 5.9f),
@@ -140,11 +144,15 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 		)
 
 		playerSys = PlayerSys(this, player)
+		box2DSys = Box2DSys(game.world, movingBarriers)
 		game.engine.addSystem(playerSys)
+		game.engine.addSystem(box2DSys)
 
 		Gdx.input.inputProcessor = GameInputProcessor(playerSys)
 
 		game.world.setContactListener(GameContactListener(this))
+
+		restartLevel()
 	}
 
 	override fun render(delta: Float) {
@@ -157,7 +165,7 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 	fun die() {
 		timeDied = TimeUtils.millis()
 		waitingForRestart = true
-		game.stepWorld = false
+		pauseGame()
 	}
 
 	fun restartLevel() {
@@ -181,6 +189,14 @@ class GameScreen(private val game: CSSGameJam2022) : KtxScreen {
 			}
 		}
 
-		game.stepWorld = true
+		resumeGame()
+	}
+
+	fun pauseGame() {
+		game.engine.removeSystem(box2DSys)
+	}
+
+	fun resumeGame() {
+		game.engine.addSystem(box2DSys)
 	}
 }

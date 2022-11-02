@@ -1,8 +1,10 @@
 package io.github.rolodophone.cssgamejam2022
 
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.BodyDef
 import io.github.rolodophone.cssgamejam2022.comp.BoxBodyComp
 import io.github.rolodophone.cssgamejam2022.comp.InfoComp
+import io.github.rolodophone.cssgamejam2022.comp.KinematicComp
 import io.github.rolodophone.cssgamejam2022.comp.TextureComp
 import ktx.ashley.entity
 import ktx.ashley.with
@@ -26,6 +28,33 @@ class EntityPresets(private val game: CSSGameJam2022) {
 		}
 		with<TextureComp> {
 			texture = game.textureAssets.barrier
+		}
+	}
+
+	fun movingBarrier(x: Float, startY: Float, minY: Float, maxY: Float, startVelocity: Float,) = game.engine.entity {
+		with<InfoComp> {
+			name = "MovingBarrier"
+			tags = mutableSetOf(InfoComp.Tag.GROUND)
+		}
+		with<BoxBodyComp> {
+			width = 0.2f
+			height = 1.5f
+			body = game.world.body {
+				type = BodyDef.BodyType.KinematicBody
+				box(width, height, Vector2(width/2f, height/2f))
+				position.set(x, startY)
+				linearVelocity.set(0f, startVelocity)
+				userData = this@entity.entity
+			}
+		}
+		with<TextureComp> {
+			texture = game.textureAssets.barrier
+		}
+		with<KinematicComp> {
+			minX = x
+			this.minY = minY
+			maxX = x
+			this.maxY = maxY
 		}
 	}
 

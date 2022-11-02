@@ -9,7 +9,7 @@ import io.github.rolodophone.cssgamejam2022.getComp
 
 const val PLAYER_MAX_SPEED_X = 7f
 
-class PlayerSys(private val gameScreen: GameScreen, player: Entity): EntitySystem() {
+class PlayerSys(private val gameScreen: GameScreen, player: Entity): EntitySystem(20) {
 	private val playerBody = player.getComp(BoxBodyComp.mapper).body
 	private val playerComp = player.getComp(PlayerComp.mapper)
 
