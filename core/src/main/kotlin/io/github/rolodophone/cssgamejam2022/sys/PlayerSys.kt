@@ -5,6 +5,8 @@ import com.badlogic.ashley.core.EntitySystem
 import io.github.rolodophone.cssgamejam2022.comp.BoxBodyComp
 import io.github.rolodophone.cssgamejam2022.getComp
 
+const val PLAYER_MAX_SPEED_X = 7f
+
 class PlayerSys(player: Entity): EntitySystem() {
 	private val playerBody = player.getComp(BoxBodyComp.mapper).body
 
@@ -18,6 +20,13 @@ class PlayerSys(player: Entity): EntitySystem() {
 		}
 		if (movingRight && onGround) {
 			playerBody.applyLinearImpulse(0.2f, 0f, 0f, 0f, true)
+		}
+
+		if (playerBody.linearVelocity.x < -PLAYER_MAX_SPEED_X) {
+			playerBody.setLinearVelocity(-PLAYER_MAX_SPEED_X, playerBody.linearVelocity.y)
+		}
+		if (playerBody.linearVelocity.x > PLAYER_MAX_SPEED_X) {
+			playerBody.setLinearVelocity(PLAYER_MAX_SPEED_X, playerBody.linearVelocity.y)
 		}
 	}
 
@@ -37,15 +46,12 @@ class PlayerSys(player: Entity): EntitySystem() {
 	}
 
 	fun jump() {
-		if (playerBody.linearVelocity.y == 0f) {
+		if (onGround) {
 			playerBody.applyLinearImpulse(0f, 10f, 0f, 0f, true)
 
 			//extra push in direction of travel
 			if (movingLeft) playerBody.applyLinearImpulse(-1f, 0f, 0f, 0f, true)
 			if (movingRight) playerBody.applyLinearImpulse(1f, 0f, 0f, 0f, true)
-
-			movingLeft = false
-			movingRight = false
 		}
 	}
 }

@@ -11,6 +11,7 @@ class TextureComp: Component, Pool.Poolable {
 	}
 
 	lateinit var texture: TextureRegion
+	var z = 0
 
 	override fun reset() {}
 }

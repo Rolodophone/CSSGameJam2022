@@ -1,13 +1,48 @@
 
 textures.png
-size: 16, 32
+size: 512, 256
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
+background
+  rotate: false
+  xy: 2, 40
+  size: 320, 180
+  orig: 320, 180
+  offset: 0, 0
+  index: -1
+barrier
+  rotate: false
+  xy: 324, 190
+  size: 4, 30
+  orig: 4, 30
+  offset: 0, 0
+  index: -1
+door
+  rotate: false
+  xy: 330, 205
+  size: 9, 15
+  orig: 9, 15
+  offset: 0, 0
+  index: -1
+platform
+  rotate: false
+  xy: 2, 32
+  size: 40, 6
+  orig: 40, 6
+  offset: 0, 0
+  index: -1
 player
   rotate: false
   xy: 2, 2
   size: 8, 14
   orig: 8, 14
+  offset: 0, 0
+  index: -1
+saw
+  rotate: false
+  xy: 2, 18
+  size: 12, 12
+  orig: 12, 12
   offset: 0, 0
   index: -1

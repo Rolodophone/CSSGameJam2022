@@ -7,9 +7,12 @@ import com.badlogic.gdx.physics.box2d.Manifold
 import io.github.rolodophone.cssgamejam2022.sys.PlayerSys
 
 class GameContactListener(private val playerSys: PlayerSys): ContactListener {
+	private var numGroundsTouching = 0
+
 	override fun beginContact(contact: Contact) {
 		if (contact.fixtureA.userData == 0 || contact.fixtureB.userData == 0) {
 			//player foot contacted platform
+			numGroundsTouching++
 			playerSys.onGround = true
 		}
 	}
@@ -17,7 +20,8 @@ class GameContactListener(private val playerSys: PlayerSys): ContactListener {
 	override fun endContact(contact: Contact) {
 		if (contact.fixtureA.userData == 0 || contact.fixtureB.userData == 0) {
 			//player foot left platform
-			playerSys.onGround = false
+			numGroundsTouching--
+			if (numGroundsTouching == 0) playerSys.onGround = false
 		}
 	}
 
