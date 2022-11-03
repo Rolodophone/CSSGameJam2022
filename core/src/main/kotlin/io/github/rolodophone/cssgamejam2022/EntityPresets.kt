@@ -1,11 +1,11 @@
 package io.github.rolodophone.cssgamejam2022
 
+import box2dLight.PointLight
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
-import io.github.rolodophone.cssgamejam2022.comp.BoxBodyComp
-import io.github.rolodophone.cssgamejam2022.comp.InfoComp
-import io.github.rolodophone.cssgamejam2022.comp.KinematicComp
-import io.github.rolodophone.cssgamejam2022.comp.TextureComp
+import io.github.rolodophone.cssgamejam2022.comp.*
 import ktx.ashley.entity
 import ktx.ashley.with
 import ktx.box2d.body
@@ -127,6 +127,36 @@ class EntityPresets(private val game: CSSGameJam2022) {
 		}
 		with<TextureComp> {
 			texture = game.textureAssets.saw
+		}
+	}
+
+	fun led(x: Float, y: Float) = game.engine.entity {
+		val ledBody: Body
+
+		with<InfoComp> {
+			name = "LED"
+			tags = mutableSetOf()
+		}
+		with<BoxBodyComp> {
+			width = 0.1f
+			height = 0.1f
+			ledBody = game.world.body {
+				box(width, height, Vector2(width/2f, height/2f)) {
+					isSensor = true
+					density = 1f
+				}
+				position.set(x, y)
+				userData = this@entity.entity
+			}
+			body = ledBody
+		}
+		with<TextureComp> {
+			texture = game.textureAssets.led
+		}
+		with<LightComp> {
+			light = PointLight(game.rayHandler, 200, Color(0.75f, 0.75f, 0.5f, 0.75f), 7f, 0f, 0f).apply {
+				attachToBody(ledBody)
+			}
 		}
 	}
 }

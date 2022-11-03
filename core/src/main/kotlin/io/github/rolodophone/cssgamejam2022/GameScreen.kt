@@ -27,6 +27,7 @@ class GameScreen(val game: CSSGameJam2022): KtxScreen {
 	lateinit var movingPlatforms: List<Entity>
 	lateinit var platforms: List<Entity>
 	lateinit var saws: List<Entity>
+	lateinit var leds: List<Entity>
 	lateinit var dialog: Entity
 
 	lateinit var playerSys: PlayerSys
@@ -86,6 +87,9 @@ class GameScreen(val game: CSSGameJam2022): KtxScreen {
 					position.set(4.25f, 2f)
 					box(width, height, Vector2(width/2f, height/2f)) {
 						isSensor = true
+						filter.categoryBits = 1
+						filter.groupIndex = 1
+						filter.maskBits = 1
 					}
 					userData = this@entity.entity
 				}
@@ -94,6 +98,8 @@ class GameScreen(val game: CSSGameJam2022): KtxScreen {
 				texture = game.textureAssets.dialog_init
 			}
 		}
+
+		game.renderSys.dialog = dialog
 	}
 
 	override fun render(delta: Float) {

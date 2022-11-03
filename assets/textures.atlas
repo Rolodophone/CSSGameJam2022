@@ -46,6 +46,13 @@ dialog_init
   orig: 150, 100
   offset: 0, 0
   index: -1
+led
+  rotate: false
+  xy: 44, 20
+  size: 2, 2
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
 platform
   rotate: false
   xy: 2, 16

@@ -18,6 +18,7 @@ class TextureAssets: Disposable {
     val player1 = loadAtlasRegion("player1")
     val player2 = loadAtlasRegion("player2")
     val saw = loadAtlasRegion("saw")
+    val led = loadAtlasRegion("led")
 
     private fun loadAtlasRegion(name: String): TextureAtlas.AtlasRegion {
         val atlasRegion = textureAtlas.findRegion(name)

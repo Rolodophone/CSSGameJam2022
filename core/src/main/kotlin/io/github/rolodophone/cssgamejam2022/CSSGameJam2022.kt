@@ -1,5 +1,6 @@
 package io.github.rolodophone.cssgamejam2022
 
+import box2dLight.RayHandler
 import com.badlogic.ashley.core.Engine
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.OrthographicCamera
@@ -32,6 +33,8 @@ class CSSGameJam2022 : KtxGame<KtxScreen>() {
 	lateinit var world: World
 	lateinit var box2DDebugRenderer: Box2DDebugRenderer
 
+	lateinit var rayHandler: RayHandler
+
 	lateinit var engine: Engine
 	lateinit var debugSys: DebugSys
 	lateinit var renderSys: RenderSys
@@ -58,10 +61,14 @@ class CSSGameJam2022 : KtxGame<KtxScreen>() {
 		world = createWorld(gravity = Vector2(0f, -20f))
 		box2DDebugRenderer = Box2DDebugRenderer()
 
+		rayHandler = RayHandler(world)
+		rayHandler.setAmbientLight(0.3f)
+		rayHandler.setBlurNum(3)
+
 		engine = Engine()
 		debugSys = DebugSys(this)
-		renderSys = RenderSys(camera, spriteBatch)
-		//engine.addSystem(debugSys)
+		renderSys = RenderSys(camera, spriteBatch, rayHandler)
+//		engine.addSystem(debugSys)
 		engine.addSystem(renderSys)
 
 		musicManager.play()
@@ -83,6 +90,9 @@ class CSSGameJam2022 : KtxGame<KtxScreen>() {
 	override fun dispose() {
 		textureAssets.dispose()
 		musicManager.dispose()
+		world.dispose()
+		box2DDebugRenderer.dispose()
+		spriteBatch.dispose()
 	}
 }
 

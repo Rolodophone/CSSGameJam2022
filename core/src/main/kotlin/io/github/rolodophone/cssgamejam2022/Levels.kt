@@ -1,6 +1,8 @@
 package io.github.rolodophone.cssgamejam2022
 
+import box2dLight.PointLight
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
@@ -10,7 +12,6 @@ import ktx.ashley.entity
 import ktx.ashley.with
 import ktx.box2d.body
 import ktx.box2d.box
-import ktx.box2d.revoluteJointWith
 import kotlin.random.Random
 
 class Level(val initOneOff: GameScreen.() -> Unit = {}, val init: GameScreen.() -> Unit = {})
@@ -99,6 +100,16 @@ val levels = listOf(
 				entityPresets.saw(5.2f, 8.7f),
 				entityPresets.saw(13.6f, 4.9f),
 			)
+			leds = listOf()
+
+			PointLight(game.rayHandler, 200, Color(0.75f, 0.75f, 0.5f, 0.75f), 7f, 0f, 0f).apply {
+				attachToBody(player.getComp(BoxBodyComp.mapper).body)
+				setContactFilter(1, 1, 1)
+			}
+			PointLight(game.rayHandler, 200, Color(0.75f, 0.75f, 0.5f, 0.75f), 7f, 0f, 0f).apply {
+				attachToBody(door.getComp(BoxBodyComp.mapper).body)
+				setContactFilter(1, 1, 1)
+			}
 
 			playerSys = PlayerSys(this, player)
 			game.engine.addSystem(playerSys)
@@ -203,21 +214,21 @@ val levels = listOf(
 			}
 		}
 	),
-	Level(
-		initOneOff = {
-			val hingePoints = listOf(
-				Vector2(2.9f, 0.35f)
-			)
-
-			for (indexedEntity in listOf(platforms[2]).withIndex()) {
-				val body = indexedEntity.value.getComp(BoxBodyComp.mapper).body
-				body.type = BodyDef.BodyType.DynamicBody
-				body.isAwake = true
-				body.revoluteJointWith(background.getComp(BoxBodyComp.mapper).body) {
-					initialize(bodyA, bodyB, bodyB.position)
-					collideConnected = false
-				}
-			}
-		}
-	)
+//	Level(
+//		initOneOff = {
+//			val hingePoints = listOf(
+//				Vector2(2.9f, 0.35f)
+//			)
+//
+//			for (indexedEntity in listOf(platforms[2]).withIndex()) {
+//				val body = indexedEntity.value.getComp(BoxBodyComp.mapper).body
+//				body.type = BodyDef.BodyType.DynamicBody
+//				body.isAwake = true
+//				body.revoluteJointWith(background.getComp(BoxBodyComp.mapper).body) {
+//					initialize(bodyA, bodyB, bodyB.position)
+//					collideConnected = false
+//				}
+//			}
+//		}
+//	)
 )
