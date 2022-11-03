@@ -53,14 +53,14 @@ platform
   orig: 40, 6
   offset: 0, 0
   index: -1
-player2
+player1
   rotate: false
-  xy: 324, 65
+  xy: 347, 88
   size: 8, 14
   orig: 8, 14
   offset: 0, 0
   index: -1
-player1
+player2
   rotate: false
   xy: 324, 65
   size: 8, 14

@@ -24,6 +24,7 @@ const val WORLD_HEIGHT_HALF = 4.5f
 
 class CSSGameJam2022 : KtxGame<KtxScreen>() {
 	lateinit var textureAssets: TextureAssets
+	lateinit var musicManager: MusicManager
 
 	lateinit var camera: OrthographicCamera
 	lateinit var viewport: ScreenViewport
@@ -43,6 +44,7 @@ class CSSGameJam2022 : KtxGame<KtxScreen>() {
 		Gdx.graphics.setFullscreenMode(Gdx.graphics.displayMode)
 
 		textureAssets = TextureAssets()
+		musicManager = MusicManager()
 
 		camera = OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT)
 		camera.translate(WORLD_WIDTH_HALF, WORLD_HEIGHT_HALF)
@@ -61,6 +63,8 @@ class CSSGameJam2022 : KtxGame<KtxScreen>() {
 		renderSys = RenderSys(camera, spriteBatch)
 		engine.addSystem(debugSys)
 		engine.addSystem(renderSys)
+
+		musicManager.play()
 
 		val gameScreen = GameScreen(this)
 		addScreen(gameScreen)

@@ -105,7 +105,7 @@ class GameScreen(val game: CSSGameJam2022): KtxScreen {
 				val playerTextureComp = player.getComp(TextureComp.mapper)
 				playerTextureComp.texture =
 					if (playerTextureComp.texture == game.textureAssets.player1) game.textureAssets.player2
-					else game.textureAssets.player2
+					else game.textureAssets.player1
 
 				timePlayerTextureLastSwitched = currentTime
 			}
