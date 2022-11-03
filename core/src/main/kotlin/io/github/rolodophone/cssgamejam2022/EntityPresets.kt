@@ -23,6 +23,7 @@ class EntityPresets(private val game: CSSGameJam2022) {
 			body = game.world.body {
 				box(width, height, Vector2(width/2f, height/2f)) {
 					density = 1f
+					filter.categoryBits = 0b11
 				}
 				position.set(x, y)
 				userData = this@entity.entity
@@ -45,6 +46,7 @@ class EntityPresets(private val game: CSSGameJam2022) {
 				type = BodyDef.BodyType.KinematicBody
 				box(width, height, Vector2(width/2f, height/2f)) {
 					density = 1f
+					filter.categoryBits = 0b11
 				}
 				userData = this@entity.entity
 			}
@@ -72,6 +74,7 @@ class EntityPresets(private val game: CSSGameJam2022) {
 				type = BodyDef.BodyType.KinematicBody
 				box(width, height, Vector2(width / 2f, height / 2f)) {
 					density = 1f
+					filter.categoryBits = 0b11
 				}
 				userData = this@entity.entity
 			}
@@ -98,6 +101,7 @@ class EntityPresets(private val game: CSSGameJam2022) {
 			body = game.world.body {
 				box(width, height, Vector2(width / 2f, height / 2f)) {
 					density = 1f
+					filter.categoryBits = 0b11
 				}
 				position.set(x, y)
 				userData = this@entity.entity
@@ -120,6 +124,7 @@ class EntityPresets(private val game: CSSGameJam2022) {
 				box(width, height, Vector2(width/2f, height/2f)) {
 					isSensor = true
 					density = 1f
+					filter.categoryBits = 0b11
 				}
 				position.set(x, y)
 				userData = this@entity.entity

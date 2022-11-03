@@ -20,7 +20,7 @@ class GameScreen(val game: CSSGameJam2022): KtxScreen {
 	val entityPresets = EntityPresets(game)
 
 	lateinit var player: Entity
-	lateinit var door: Entity
+	lateinit var processor: Entity
 	lateinit var background: Entity
 	lateinit var barriers: List<Entity>
 	lateinit var movingBarriers: List<Entity>
@@ -87,7 +87,6 @@ class GameScreen(val game: CSSGameJam2022): KtxScreen {
 					position.set(4.25f, 2f)
 					box(width, height, Vector2(width/2f, height/2f)) {
 						isSensor = true
-						filter.categoryBits = 0
 					}
 					userData = this@entity.entity
 				}

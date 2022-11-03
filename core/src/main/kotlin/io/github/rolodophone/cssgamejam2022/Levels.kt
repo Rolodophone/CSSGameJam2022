@@ -20,9 +20,9 @@ val levels = listOf(
 	Level(), //dummy level to make indexing start at 1
 	Level(
 		initOneOff = {
-			door = game.engine.entity {
+			processor = game.engine.entity {
 				with<InfoComp> {
-					name = "Door"
+					name = "Processor"
 					tags = mutableSetOf(InfoComp.Tag.DOOR)
 				}
 				with<BoxBodyComp> {
@@ -37,7 +37,7 @@ val levels = listOf(
 					}
 				}
 				with<TextureComp> {
-					texture = game.textureAssets.door
+					texture = game.textureAssets.processor
 					z = -10
 				}
 			}
@@ -103,12 +103,14 @@ val levels = listOf(
 			leds = listOf()
 
 			PointLight(game.rayHandler, 200, Color(0.75f, 0.75f, 0.5f, 0.75f), 7f, 0f, 0f).apply {
-				attachToBody(player.getComp(BoxBodyComp.mapper).body)
-				setContactFilter(1, 0, 1)
+				val playerBoxBodyComp = player.getComp(BoxBodyComp.mapper)
+				attachToBody(playerBoxBodyComp.body, playerBoxBodyComp.width/2f, playerBoxBodyComp.height/2f)
+				setContactFilter(1, 0, 0b10)
 			}
-			PointLight(game.rayHandler, 200, Color(0.75f, 0.75f, 0.5f, 0.75f), 7f, 0f, 0f).apply {
-				attachToBody(door.getComp(BoxBodyComp.mapper).body)
-				setContactFilter(1, 0, 1)
+			PointLight(game.rayHandler, 200, Color(0.75f, 0.75f, 0.5f, 0.75f), 3f, 0f, 0f).apply {
+				val processorBoxBodyComp = processor.getComp(BoxBodyComp.mapper)
+				attachToBody(processorBoxBodyComp.body, processorBoxBodyComp.width/2f, processorBoxBodyComp.height/2f)
+				setContactFilter(1, 0, 0b10)
 			}
 
 			playerSys = PlayerSys(this, player)

@@ -13,7 +13,7 @@ class TextureAssets: Disposable {
     val dialog_fail = loadAtlasRegion("dialog_fail")
     val dialog_error = loadAtlasRegion("dialog_error")
     val dialog_crash = loadAtlasRegion("dialog_crash")
-    val door = loadAtlasRegion("processor")
+    val processor = loadAtlasRegion("processor")
     val platform = loadAtlasRegion("platform")
     val player1 = loadAtlasRegion("player1")
     val player2 = loadAtlasRegion("player2")
