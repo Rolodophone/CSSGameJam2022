@@ -104,11 +104,11 @@ val levels = listOf(
 
 			PointLight(game.rayHandler, 200, Color(0.75f, 0.75f, 0.5f, 0.75f), 7f, 0f, 0f).apply {
 				attachToBody(player.getComp(BoxBodyComp.mapper).body)
-				setContactFilter(1, 1, 1)
+				setContactFilter(1, 0, 1)
 			}
 			PointLight(game.rayHandler, 200, Color(0.75f, 0.75f, 0.5f, 0.75f), 7f, 0f, 0f).apply {
 				attachToBody(door.getComp(BoxBodyComp.mapper).body)
-				setContactFilter(1, 1, 1)
+				setContactFilter(1, 0, 1)
 			}
 
 			playerSys = PlayerSys(this, player)
