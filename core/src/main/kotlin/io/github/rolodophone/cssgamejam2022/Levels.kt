@@ -3,7 +3,6 @@ package io.github.rolodophone.cssgamejam2022
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.BodyDef
 import io.github.rolodophone.cssgamejam2022.comp.*
 import io.github.rolodophone.cssgamejam2022.sys.PlayerSys
 import ktx.ashley.entity
@@ -17,43 +16,16 @@ val levels = listOf(
 	Level(), //dummy level to make indexing start at 1
 	Level(
 		initOneOff = {
-			player = game.engine.entity {
-				with<InfoComp> {
-					name = "Player"
-					tags = mutableSetOf(InfoComp.Tag.PLAYER)
-				}
-				with<BoxBodyComp> {
-					width = 0.4f
-					height = 0.7f
-					body = game.world.body {
-						type = BodyDef.BodyType.DynamicBody
-						fixedRotation = true
-
-						box(width, height, Vector2(width/2f, height/2f))
-						box(width, 0.2f, Vector2(width/2f, 0f)) { // foot sensor
-							isSensor = true
-							userData = 0 //0 means player foot sensor
-						}
-
-						userData = this@entity.entity
-					}
-				}
-				with<TextureComp> {
-					texture = game.textureAssets.player
-				}
-				with<PlayerComp>()
-			}
-
 			door = game.engine.entity {
 				with<InfoComp> {
 					name = "Door"
 					tags = mutableSetOf(InfoComp.Tag.DOOR)
 				}
 				with<BoxBodyComp> {
-					width = 0.45f
-					height = 0.75f
+					width = 1.05f
+					height = 1.05f
 					body = game.world.body {
-						position.set(14.5f, 7f)
+						position.set(14.15f, 7f)
 						box(width, height, Vector2(width/2f, height/2f)) {
 							isSensor = true
 						}

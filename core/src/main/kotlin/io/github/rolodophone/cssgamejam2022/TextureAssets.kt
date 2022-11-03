@@ -12,9 +12,10 @@ class TextureAssets {
     val dialog_fail = loadAtlasRegion("dialog_fail")
     val dialog_error = loadAtlasRegion("dialog_error")
     val dialog_crash = loadAtlasRegion("dialog_crash")
-    val door = loadAtlasRegion("door")
+    val door = loadAtlasRegion("processor")
     val platform = loadAtlasRegion("platform")
-    val player = loadAtlasRegion("player")
+    val player1 = loadAtlasRegion("player1")
+    val player2 = loadAtlasRegion("player2")
     val saw = loadAtlasRegion("saw")
 
     private fun loadAtlasRegion(name: String): TextureAtlas.AtlasRegion {
