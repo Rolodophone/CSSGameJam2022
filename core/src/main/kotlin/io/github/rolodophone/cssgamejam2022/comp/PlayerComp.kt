@@ -22,6 +22,5 @@ class PlayerComp: Component, Pool.Poolable {
 		movingLeft = false
 		movingRight = false
 		onGround = true
-		numGroundsTouching = 0
 	}
 }

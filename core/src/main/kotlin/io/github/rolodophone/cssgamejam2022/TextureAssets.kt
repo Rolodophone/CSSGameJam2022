@@ -8,6 +8,10 @@ class TextureAssets {
 
     val background = loadAtlasRegion("background")
     val barrier = loadAtlasRegion("barrier")
+    val dialog_init = loadAtlasRegion("dialog_init")
+    val dialog_fail = loadAtlasRegion("dialog_fail")
+    val dialog_error = loadAtlasRegion("dialog_error")
+    val dialog_crash = loadAtlasRegion("dialog_crash")
     val door = loadAtlasRegion("door")
     val platform = loadAtlasRegion("platform")
     val player = loadAtlasRegion("player")

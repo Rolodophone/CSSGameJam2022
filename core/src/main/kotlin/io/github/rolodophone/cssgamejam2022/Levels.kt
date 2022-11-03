@@ -97,18 +97,17 @@ val levels = listOf(
 			)
 			movingBarriers = listOf(
 				entityPresets.movingBarrier(12.6f, 12.6f, 5.5f, 7f),
-				entityPresets.movingBarrier(7.7f, 14.35f,  0.35f, 0.35f),
+				entityPresets.movingBarrier(7.7f, 14.3f,  0.35f, 0.35f),
 			)
 			movingPlatforms = listOf(
 				entityPresets.movingPlatform(4f, 6f, 2f, 2f),
 				entityPresets.movingPlatform(3.8f, 3.8f, 5.5f, 7.3f),
 			)
 			platforms = listOf(
-				entityPresets.platform(0f, 0f),
-				entityPresets.platform(2f, 0f),
-				entityPresets.platform(4f, 0f),
+				entityPresets.platform(0.5f, 0f),
+				entityPresets.platform(2.75f, 0.2f),
+				entityPresets.platform(5f, 0.4f),
 				entityPresets.platform(8f, 0f),
-				entityPresets.platform(10f, 0f),
 				entityPresets.platform(12f, 0f),
 				entityPresets.platform(1.5f, 3.8f),
 				entityPresets.platform(0.25f, 8.7f),
@@ -128,7 +127,7 @@ val levels = listOf(
 			playerSys = PlayerSys(this, player)
 			game.engine.addSystem(playerSys)
 
-			Gdx.input.inputProcessor = GameInputProcessor(playerSys)
+			Gdx.input.inputProcessor = GameInputProcessor(playerSys, this)
 
 			game.world.setContactListener(GameContactListener(this))
 		},
@@ -160,32 +159,44 @@ val levels = listOf(
 	Level(
 		initOneOff = {
 			movingBarriers[0].apply {
-				getComp(BoxBodyComp.mapper).body.apply {
-					setTransform(12.6f, 5.5f, 0f)
-					setLinearVelocity(0f, 0.5f)
-				}
-				getComp(KinematicComp.mapper).maxY = 5.6f
+				getComp(KinematicComp.mapper).minY = 6.5f
+				getComp(KinematicComp.mapper).maxY = 6.6f
 			}
 			movingBarriers[1].apply {
-				getComp(BoxBodyComp.mapper).body.apply {
-					setTransform(7.7f, 0.35f, 0f)
-					setLinearVelocity(0.5f, 0f)
-				}
 				getComp(KinematicComp.mapper).maxX = 7.8f
 			}
 			movingPlatforms[0].apply {
+				getComp(KinematicComp.mapper).minX = 5.9f
+			}
+			movingPlatforms[1].apply {
+				getComp(KinematicComp.mapper).minY = 7.5f
+				getComp(KinematicComp.mapper).maxY = 7.6f
+			}
+		},
+		init = {
+			movingBarriers[0].apply {
 				getComp(BoxBodyComp.mapper).body.apply {
-					setTransform(4f,2f, 0f)
+					setTransform(12.6f, 6.55f, 0f)
+					setLinearVelocity(0f, 0.5f)
+				}
+			}
+			movingBarriers[1].apply {
+				getComp(BoxBodyComp.mapper).body.apply {
+					setTransform(7.75f, 0.35f, 0f)
 					setLinearVelocity(0.5f, 0f)
 				}
-				getComp(KinematicComp.mapper).maxX = 4.1f
+			}
+			movingPlatforms[0].apply {
+				getComp(BoxBodyComp.mapper).body.apply {
+					setTransform(5.95f,2f, 0f)
+					setLinearVelocity(0.5f, 0f)
+				}
 			}
 			movingPlatforms[1].apply {
 				getComp(BoxBodyComp.mapper).body.apply {
-					setTransform(3.8f, 5.5f, 0f)
+					setTransform(3.8f, 7.55f, 0f)
 					setLinearVelocity(0f, 0.5f)
 				}
-				getComp(KinematicComp.mapper).maxY = 5.6f
 			}
 		}
 	)

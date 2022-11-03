@@ -1,11 +1,17 @@
 package io.github.rolodophone.cssgamejam2022
 
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.utils.TimeUtils
+import com.badlogic.gdx.math.Vector2
 import io.github.rolodophone.cssgamejam2022.comp.BoxBodyComp
+import io.github.rolodophone.cssgamejam2022.comp.InfoComp
+import io.github.rolodophone.cssgamejam2022.comp.TextureComp
 import io.github.rolodophone.cssgamejam2022.sys.Box2DSys
 import io.github.rolodophone.cssgamejam2022.sys.PlayerSys
 import ktx.app.KtxScreen
+import ktx.ashley.entity
+import ktx.ashley.with
+import ktx.box2d.body
+import ktx.box2d.box
 
 class GameScreen(val game: CSSGameJam2022): KtxScreen {
 	val entityPresets = EntityPresets(game)
@@ -18,57 +24,102 @@ class GameScreen(val game: CSSGameJam2022): KtxScreen {
 	lateinit var movingPlatforms: List<Entity>
 	lateinit var platforms: List<Entity>
 	lateinit var saws: List<Entity>
+	lateinit var dialog: Entity
 
 	lateinit var playerSys: PlayerSys
 	lateinit var box2DSys: Box2DSys
 
 	var currentLevel = 1
-	var timeScheduled = 0L
-	var funScheduled: (GameScreen.() -> Unit)? = null
+	var dialogShown = true
+	var firstLevelJustStarted = true
+	var levelFailed = false
+	var levelComplete = false
+	var gameComplete = false
 
 	override fun show() {
 		box2DSys = Box2DSys(game.world)
-		game.engine.addSystem(box2DSys)
 
 		levels[1].initOneOff(this)
 		levels[1].init(this)
-		resumeGame()
+
+		dialog = game.engine.entity {
+			with<InfoComp> {
+				name = "Dialog"
+			}
+			with<BoxBodyComp> {
+				width = 7.5f
+				height = 5f
+				body = game.world.body {
+					position.set(4.25f, 2f)
+					box(width, height, Vector2(width/2f, height/2f)) {
+						isSensor = true
+					}
+					userData = this@entity.entity
+				}
+			}
+			with<TextureComp> {
+				texture = game.textureAssets.dialog_init
+			}
+		}
 	}
 
 	override fun render(delta: Float) {
-		if (funScheduled != null && TimeUtils.millis() >= timeScheduled) {
-			funScheduled?.invoke(this)
-			funScheduled = null
-		}
-
-		if (player.getComp(BoxBodyComp.mapper).y < -0.7f) scheduleRestartLevel()
+		if (player.getComp(BoxBodyComp.mapper).y < -0.7f) failLevel()
 	}
 
-	fun scheduleRestartLevel() {
-		if (funScheduled == null) {
-			timeScheduled = TimeUtils.millis() + 500L
-			funScheduled = { restartLevel() }
-			pauseGame()
+	fun continueDialog() {
+		if (dialogShown && !gameComplete) {
+			game.engine.removeEntity(dialog)
+			dialogShown = false
+
+			if (levelFailed) {
+				levelFailed = false
+				restartLevel()
+			} else if (levelComplete) {
+				nextLevel()
+			} else if (firstLevelJustStarted) {
+				firstLevelJustStarted = false
+				resumeGame()
+			}
 		}
 	}
 
-	fun scheduleNextLevel() {
-		if (funScheduled == null) {
-			timeScheduled = TimeUtils.millis() + 500L
-			funScheduled = { nextLevel() }
+	fun failLevel() {
+		if (!levelFailed && !dialogShown) {
 			pauseGame()
+			dialog.getComp(TextureComp.mapper).texture = game.textureAssets.dialog_fail
+			game.engine.addEntity(dialog)
+			dialogShown = true
+			levelFailed = true
+		}
+	}
+
+	fun completeLevel() {
+		if (!dialogShown) {
+			pauseGame()
+			currentLevel++
+
+			if (currentLevel < levels.size) {
+				dialog.getComp(TextureComp.mapper).texture = game.textureAssets.dialog_error
+				levelComplete = true
+			} else {
+				dialog.getComp(TextureComp.mapper).texture = game.textureAssets.dialog_crash
+				gameComplete = true
+			}
+
+			game.engine.addEntity(dialog)
+			dialogShown = true
 		}
 	}
 
 	fun restartLevel() {
-		funScheduled = null
-		for (i in 1..currentLevel) levels[i].init(this)
-		resumeGame()
+		if (!dialogShown) {
+			for (i in 1..currentLevel) levels[i].init(this)
+			resumeGame()
+		}
 	}
 
-	fun nextLevel() {
-		funScheduled = null
-		currentLevel++
+	private fun nextLevel() {
 		for (i in 1 until currentLevel) levels[i].init(this)
 		levels[currentLevel].initOneOff(this)
 		levels[currentLevel].init(this)

@@ -7,6 +7,7 @@ import io.github.rolodophone.cssgamejam2022.comp.BoxBodyComp
 import io.github.rolodophone.cssgamejam2022.comp.KinematicComp
 import io.github.rolodophone.cssgamejam2022.getComp
 import ktx.ashley.allOf
+import kotlin.math.absoluteValue
 
 class Box2DSys(
 	private val world: World
@@ -22,11 +23,19 @@ class Box2DSys(
 		val boxBodyComp = entity.getComp(BoxBodyComp.mapper)
 		val kinematicComp = entity.getComp(KinematicComp.mapper)
 
-		if (boxBodyComp.x < kinematicComp.minX || boxBodyComp.x > kinematicComp.maxX) {
-			boxBodyComp.body.setLinearVelocity(-boxBodyComp.body.linearVelocity.x, boxBodyComp.body.linearVelocity.y)
-		}
-		if (boxBodyComp.y < kinematicComp.minY || boxBodyComp.y > kinematicComp.maxY) {
-			boxBodyComp.body.setLinearVelocity(boxBodyComp.body.linearVelocity.x, -boxBodyComp.body.linearVelocity.y)
+		when {
+			boxBodyComp.x < kinematicComp.minX -> {
+				boxBodyComp.body.setLinearVelocity(boxBodyComp.body.linearVelocity.x.absoluteValue, boxBodyComp.body.linearVelocity.y)
+			}
+			boxBodyComp.x > kinematicComp.maxX -> {
+				boxBodyComp.body.setLinearVelocity(-boxBodyComp.body.linearVelocity.x.absoluteValue, boxBodyComp.body.linearVelocity.y)
+			}
+			boxBodyComp.y < kinematicComp.minY -> {
+				boxBodyComp.body.setLinearVelocity(boxBodyComp.body.linearVelocity.x.absoluteValue, -boxBodyComp.body.linearVelocity.y)
+			}
+			boxBodyComp.y > kinematicComp.maxY -> {
+				boxBodyComp.body.setLinearVelocity(-boxBodyComp.body.linearVelocity.x.absoluteValue, -boxBodyComp.body.linearVelocity.y)
+			}
 		}
 	}
 }

@@ -1,47 +1,75 @@
 
 textures.png
-size: 512, 256
+size: 1024, 256
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
 background
   rotate: false
-  xy: 2, 40
+  xy: 2, 27
   size: 320, 180
   orig: 320, 180
   offset: 0, 0
   index: -1
 barrier
   rotate: false
-  xy: 324, 190
+  xy: 324, 75
   size: 4, 30
   orig: 4, 30
   offset: 0, 0
   index: -1
+dialog_crash
+  rotate: false
+  xy: 780, 107
+  size: 150, 100
+  orig: 150, 100
+  offset: 0, 0
+  index: -1
+dialog_error
+  rotate: false
+  xy: 324, 107
+  size: 150, 100
+  orig: 150, 100
+  offset: 0, 0
+  index: -1
+dialog_fail
+  rotate: false
+  xy: 476, 107
+  size: 150, 100
+  orig: 150, 100
+  offset: 0, 0
+  index: -1
+dialog_init
+  rotate: false
+  xy: 628, 107
+  size: 150, 100
+  orig: 150, 100
+  offset: 0, 0
+  index: -1
 door
   rotate: false
-  xy: 330, 205
+  xy: 2, 2
   size: 9, 15
   orig: 9, 15
   offset: 0, 0
   index: -1
 platform
   rotate: false
-  xy: 2, 32
+  xy: 2, 19
   size: 40, 6
   orig: 40, 6
   offset: 0, 0
   index: -1
 player
   rotate: false
-  xy: 2, 2
+  xy: 330, 91
   size: 8, 14
   orig: 8, 14
   offset: 0, 0
   index: -1
 saw
   rotate: false
-  xy: 2, 18
+  xy: 932, 195
   size: 12, 12
   orig: 12, 12
   offset: 0, 0

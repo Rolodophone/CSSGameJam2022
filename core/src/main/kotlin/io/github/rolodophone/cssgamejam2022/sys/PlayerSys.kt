@@ -53,7 +53,4 @@ class PlayerSys(private val gameScreen: GameScreen, player: Entity): EntitySyste
 			if (playerComp.movingRight) playerBody.applyLinearImpulse(1f, 0f, 0f, 0f, true)
 		}
 	}
-
-	fun restartLevel() = gameScreen.restartLevel()
-	fun nextLevel() = gameScreen.nextLevel()
 }

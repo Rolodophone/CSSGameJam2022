@@ -6,7 +6,8 @@ import com.badlogic.gdx.InputProcessor
 import io.github.rolodophone.cssgamejam2022.sys.PlayerSys
 
 class GameInputProcessor(
-	private val playerSys: PlayerSys
+	private val playerSys: PlayerSys,
+	private val gameScreen: GameScreen
 ): InputProcessor {
 	override fun keyDown(keycode: Int): Boolean {
 		//fullscreen control
@@ -27,13 +28,14 @@ class GameInputProcessor(
 		}
 
 		//game
-		if (keycode in setOf(Keys.A, Keys.D, Keys.W, Keys.R, Keys.NUMPAD_0)) {
+		if (keycode in setOf(Keys.A, Keys.D, Keys.W, Keys.R, Keys.SPACE, Keys.NUMPAD_0)) {
 			when (keycode) {
 				Keys.A -> playerSys.moveLeft()
 				Keys.D -> playerSys.moveRight()
 				Keys.W -> playerSys.jump()
-				Keys.R -> playerSys.restartLevel()
-				Keys.NUMPAD_0 -> playerSys.nextLevel()
+				Keys.R -> gameScreen.restartLevel()
+				Keys.SPACE -> gameScreen.continueDialog()
+				Keys.NUMPAD_0 -> gameScreen.completeLevel()
 			}
 
 			return true
