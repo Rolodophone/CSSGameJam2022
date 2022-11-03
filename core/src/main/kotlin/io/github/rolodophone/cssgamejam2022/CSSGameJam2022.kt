@@ -61,7 +61,7 @@ class CSSGameJam2022 : KtxGame<KtxScreen>() {
 		engine = Engine()
 		debugSys = DebugSys(this)
 		renderSys = RenderSys(camera, spriteBatch)
-		engine.addSystem(debugSys)
+		//engine.addSystem(debugSys)
 		engine.addSystem(renderSys)
 
 		musicManager.play()
@@ -78,6 +78,11 @@ class CSSGameJam2022 : KtxGame<KtxScreen>() {
 
 		engine.update(dt)
 		currentScreen.render(dt)
+	}
+
+	override fun dispose() {
+		textureAssets.dispose()
+		musicManager.dispose()
 	}
 }
 

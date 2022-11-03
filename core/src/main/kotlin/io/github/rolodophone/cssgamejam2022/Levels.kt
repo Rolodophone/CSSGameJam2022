@@ -3,12 +3,15 @@ package io.github.rolodophone.cssgamejam2022
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.BodyDef
 import io.github.rolodophone.cssgamejam2022.comp.*
 import io.github.rolodophone.cssgamejam2022.sys.PlayerSys
 import ktx.ashley.entity
 import ktx.ashley.with
 import ktx.box2d.body
 import ktx.box2d.box
+import ktx.box2d.revoluteJointWith
+import kotlin.random.Random
 
 class Level(val initOneOff: GameScreen.() -> Unit = {}, val init: GameScreen.() -> Unit = {})
 
@@ -25,7 +28,7 @@ val levels = listOf(
 					width = 1.05f
 					height = 1.05f
 					body = game.world.body {
-						position.set(14.15f, 7f)
+						position.set(14.15f, 7.3f)
 						box(width, height, Vector2(width/2f, height/2f)) {
 							isSensor = true
 						}
@@ -91,10 +94,10 @@ val levels = listOf(
 				entityPresets.platform(9.5f, 6f)
 			)
 			saws = listOf(
-				entityPresets.saw(-0.3f, 2.5f),
-				entityPresets.saw(-0.3f, 5.9f),
+				entityPresets.saw(0f, 2.5f),
+				entityPresets.saw(0f, 5.9f),
 				entityPresets.saw(5.2f, 8.7f),
-				entityPresets.saw(15.7f, 4.9f),
+				entityPresets.saw(13.6f, 4.9f),
 			)
 
 			playerSys = PlayerSys(this, player)
@@ -174,10 +177,46 @@ val levels = listOf(
 		}
 	),
 	Level(
+		initOneOff = {
+			for (saw in saws) {
+				val sawBody = saw.getComp(BoxBodyComp.mapper).body
+				sawBody.type = BodyDef.BodyType.DynamicBody
+				sawBody.fixtureList.single().isSensor = false
+			}
+		},
 		init = {
+			saws[0].getComp(BoxBodyComp.mapper).body.setTransform(0f, 2.5f, 0f)
+			saws[1].getComp(BoxBodyComp.mapper).body.setTransform(0f, 5.9f, 0f)
+			saws[2].getComp(BoxBodyComp.mapper).body.setTransform(5.2f, 8.7f, 0f)
+			saws[3].getComp(BoxBodyComp.mapper).body.setTransform(13.6f, 4.9f, 0f)
+			saws.forEach {
+				it.getComp(BoxBodyComp.mapper).body.isAwake = true
+			}
+		}
+	),
+	Level(
+		init = {
+			val random = Random(328)
 			(platforms + barriers + movingPlatforms + movingBarriers).forEach {
 				val body = it.getComp(BoxBodyComp.mapper).body
-				body.setTransform(body.position, nextFloat(-MathUtils.PI/8f, MathUtils.PI/8f))
+				body.setTransform(body.position, random.nextFloat() * MathUtils.PI/4f - MathUtils.PI/8f)
+			}
+		}
+	),
+	Level(
+		initOneOff = {
+			val hingePoints = listOf(
+				Vector2(2.9f, 0.35f)
+			)
+
+			for (indexedEntity in listOf(platforms[2]).withIndex()) {
+				val body = indexedEntity.value.getComp(BoxBodyComp.mapper).body
+				body.type = BodyDef.BodyType.DynamicBody
+				body.isAwake = true
+				body.revoluteJointWith(background.getComp(BoxBodyComp.mapper).body) {
+					initialize(bodyA, bodyB, bodyB.position)
+					collideConnected = false
+				}
 			}
 		}
 	)

@@ -21,7 +21,9 @@ class EntityPresets(private val game: CSSGameJam2022) {
 			width = 0.2f
 			height = 1.5f
 			body = game.world.body {
-				box(width, height, Vector2(width/2f, height/2f))
+				box(width, height, Vector2(width/2f, height/2f)) {
+					density = 1f
+				}
 				position.set(x, y)
 				userData = this@entity.entity
 			}
@@ -41,7 +43,9 @@ class EntityPresets(private val game: CSSGameJam2022) {
 			height = 1.5f
 			body = game.world.body {
 				type = BodyDef.BodyType.KinematicBody
-				box(width, height, Vector2(width/2f, height/2f))
+				box(width, height, Vector2(width/2f, height/2f)) {
+					density = 1f
+				}
 				userData = this@entity.entity
 			}
 		}
@@ -66,7 +70,9 @@ class EntityPresets(private val game: CSSGameJam2022) {
 			height = 0.3f
 			body = game.world.body {
 				type = BodyDef.BodyType.KinematicBody
-				box(width, height, Vector2(width / 2f, height / 2f))
+				box(width, height, Vector2(width / 2f, height / 2f)) {
+					density = 1f
+				}
 				userData = this@entity.entity
 			}
 		}
@@ -90,7 +96,9 @@ class EntityPresets(private val game: CSSGameJam2022) {
 			width = 2f
 			height = 0.3f
 			body = game.world.body {
-				box(width, height, Vector2(width / 2f, height / 2f))
+				box(width, height, Vector2(width / 2f, height / 2f)) {
+					density = 1f
+				}
 				position.set(x, y)
 				userData = this@entity.entity
 			}
@@ -111,6 +119,7 @@ class EntityPresets(private val game: CSSGameJam2022) {
 			body = game.world.body {
 				box(width, height, Vector2(width/2f, height/2f)) {
 					isSensor = true
+					density = 1f
 				}
 				position.set(x, y)
 				userData = this@entity.entity

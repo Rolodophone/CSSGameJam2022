@@ -2,8 +2,9 @@ package io.github.rolodophone.cssgamejam2022
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.utils.Disposable
 
-class TextureAssets {
+class TextureAssets: Disposable {
     private val textureAtlas = TextureAtlas(Gdx.files.internal("textures.atlas"))
 
     val background = loadAtlasRegion("background")
@@ -22,5 +23,9 @@ class TextureAssets {
         val atlasRegion = textureAtlas.findRegion(name)
         requireNotNull(atlasRegion) { "Region '$name' not found in texture atlas." }
         return atlasRegion
+    }
+
+    override fun dispose() {
+        textureAtlas.dispose()
     }
 }
