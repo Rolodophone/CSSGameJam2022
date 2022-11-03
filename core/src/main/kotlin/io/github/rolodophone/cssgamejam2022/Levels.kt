@@ -17,7 +17,9 @@ import kotlin.random.Random
 class Level(val initOneOff: GameScreen.() -> Unit = {}, val init: GameScreen.() -> Unit = {})
 
 val levels = listOf(
-	Level(), //dummy level to make indexing start at 1
+	//dummy level to make indexing start at 1
+	Level(),
+	//level 1: everything as normal
 	Level(
 		initOneOff = {
 			processor = game.engine.entity {
@@ -145,6 +147,7 @@ val levels = listOf(
 			}
 		},
 	),
+	//level 2: moving platforms and barriers get stuck
 	Level(
 		initOneOff = {
 			movingBarriers[0].apply {
@@ -189,6 +192,37 @@ val levels = listOf(
 			}
 		}
 	),
+	//level 3: some platforms disappear
+	Level(
+		init = {
+			val hideList = listOf(platforms[1], platforms[4])
+			val hideEntities = {
+				for (entity in hideList) {
+					entity.getComp(BoxBodyComp.mapper).body.fixtureList.forEach {
+						it.isSensor = true
+						it.filterData.categoryBits = 1
+					}
+					game.engine.removeEntity(entity)
+				}
+			}
+			val showEntities = {
+				for (entity in hideList) {
+					entity.getComp(BoxBodyComp.mapper).body.fixtureList.forEach {
+						it.isSensor = false
+						it.filterData.categoryBits = 0b11
+					}
+					game.engine.addEntity(entity)
+				}
+			}
+
+			hideEntities()
+			scheduleFunction(50L, showEntities)
+			scheduleFunction(350L, hideEntities)
+			scheduleFunction(400L, showEntities)
+			scheduleFunction(700L, hideEntities)
+		}
+	),
+	//level 4: saws fall off
 	Level(
 		initOneOff = {
 			for (saw in saws) {
@@ -207,6 +241,7 @@ val levels = listOf(
 			}
 		}
 	),
+	//level 5: skewed platforms and barriers
 	Level(
 		init = {
 			val random = Random(330)

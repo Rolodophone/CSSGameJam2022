@@ -41,7 +41,8 @@ class GameScreen(val game: CSSGameJam2022): KtxScreen {
 	var gameComplete = false
 	var gamePaused = true
 
-	val scheduledFunctions = mutableListOf<ScheduledFunction>()
+	private val scheduledFunctions = mutableListOf<ScheduledFunction>()
+	private val functionsToSchedule = mutableListOf<ScheduledFunction>()
 
 	override fun show() {
 		box2DSys = Box2DSys(game.world)
@@ -99,19 +100,25 @@ class GameScreen(val game: CSSGameJam2022): KtxScreen {
 		game.renderSys.dialog = dialog
 
 		//player animation
-		scheduledFunctions.add(ScheduledFunction(100L) { incrementPlayerTexture() })
+		scheduleFunction(100L) { incrementPlayerTexture() }
 	}
 
 	override fun render(delta: Float) {
 		if (!gamePaused) {
 			if (player.getComp(BoxBodyComp.mapper).y < -0.7f) failLevel()
 
+			val scheduledFunctionsToRemove = mutableListOf<ScheduledFunction>()
 			for (scheduledFunction in scheduledFunctions) {
 				if (TimeUtils.millis() > scheduledFunction.millisScheduled) {
 					scheduledFunction.invoke()
-					scheduledFunctions.remove(scheduledFunction)
+					scheduledFunctionsToRemove.add(scheduledFunction)
 				}
 			}
+			scheduledFunctions.removeAll { it in scheduledFunctionsToRemove }
+			scheduledFunctionsToRemove.clear()
+			scheduledFunctions.addAll(functionsToSchedule)
+			functionsToSchedule.forEach { it.schedule() }
+			functionsToSchedule.clear()
 		}
 	}
 
@@ -184,12 +191,16 @@ class GameScreen(val game: CSSGameJam2022): KtxScreen {
 		gamePaused = false
 	}
 
+	fun scheduleFunction(millisUntil: Long, function: () -> Unit) {
+		functionsToSchedule.add(ScheduledFunction(millisUntil, function))
+	}
+
 	private fun incrementPlayerTexture() {
 		val playerTextureComp = player.getComp(TextureComp.mapper)
 		playerTextureComp.texture =
 			if (playerTextureComp.texture == game.textureAssets.player1) game.textureAssets.player2
 			else game.textureAssets.player1
 
-		scheduledFunctions.add(ScheduledFunction(100L) { incrementPlayerTexture() })
+		scheduleFunction(100L) { incrementPlayerTexture() }
 	}
 }
