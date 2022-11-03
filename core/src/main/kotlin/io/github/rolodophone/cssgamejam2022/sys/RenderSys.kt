@@ -5,6 +5,7 @@ import com.badlogic.ashley.systems.SortedIteratingSystem
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.math.MathUtils
 import io.github.rolodophone.cssgamejam2022.comp.BoxBodyComp
 import io.github.rolodophone.cssgamejam2022.comp.TextureComp
 import io.github.rolodophone.cssgamejam2022.getComp
@@ -34,6 +35,7 @@ class RenderSys(
 
 		sprite.setBounds(boxBodyComp.x, boxBodyComp.y, boxBodyComp.width, boxBodyComp.height)
 		sprite.setRegion(textureComp.texture)
+		sprite.rotation = MathUtils.radDeg * boxBodyComp.body.angle
 		sprite.draw(spriteBatch)
 	}
 }

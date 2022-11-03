@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
 import io.github.rolodophone.cssgamejam2022.comp.InfoComp
 import ktx.ashley.get
+import kotlin.random.Random
 
 fun <C: Component> Entity.getCompOrNull(mapper: ComponentMapper<C>) = this[mapper]
 
@@ -21,3 +22,5 @@ fun Entity.hasTag(tag: InfoComp.Tag): Boolean {
 	return if (tags == null) false
 	else tag in tags
 }
+
+fun nextFloat(min: Float, max: Float) = Random.Default.nextFloat() * (max - min) + min

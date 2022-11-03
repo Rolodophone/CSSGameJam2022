@@ -1,6 +1,7 @@
 package io.github.rolodophone.cssgamejam2022
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
 import io.github.rolodophone.cssgamejam2022.comp.*
@@ -197,6 +198,14 @@ val levels = listOf(
 					setTransform(3.8f, 7.55f, 0f)
 					setLinearVelocity(0f, 0.5f)
 				}
+			}
+		}
+	),
+	Level(
+		init = {
+			(platforms + barriers + movingPlatforms + movingBarriers).forEach {
+				val body = it.getComp(BoxBodyComp.mapper).body
+				body.setTransform(body.position, nextFloat(-MathUtils.PI/8f, MathUtils.PI/8f))
 			}
 		}
 	)
