@@ -41,7 +41,7 @@ class GameScreen(val game: CSSGameJam2022): KtxScreen {
 	var gameComplete = false
 	var gamePaused = true
 
-	var timePlayerTextureLastSwitched = 0L
+	val scheduledFunctions = mutableListOf<ScheduledFunction>()
 
 	override fun show() {
 		box2DSys = Box2DSys(game.world)
@@ -97,20 +97,20 @@ class GameScreen(val game: CSSGameJam2022): KtxScreen {
 		}
 
 		game.renderSys.dialog = dialog
+
+		//player animation
+		scheduledFunctions.add(ScheduledFunction(100L) { incrementPlayerTexture() })
 	}
 
 	override fun render(delta: Float) {
 		if (!gamePaused) {
 			if (player.getComp(BoxBodyComp.mapper).y < -0.7f) failLevel()
 
-			val currentTime = TimeUtils.millis()
-			if (currentTime > timePlayerTextureLastSwitched + 100L) {
-				val playerTextureComp = player.getComp(TextureComp.mapper)
-				playerTextureComp.texture =
-					if (playerTextureComp.texture == game.textureAssets.player1) game.textureAssets.player2
-					else game.textureAssets.player1
-
-				timePlayerTextureLastSwitched = currentTime
+			for (scheduledFunction in scheduledFunctions) {
+				if (TimeUtils.millis() > scheduledFunction.millisScheduled) {
+					scheduledFunction.invoke()
+					scheduledFunctions.remove(scheduledFunction)
+				}
 			}
 		}
 	}
@@ -182,5 +182,14 @@ class GameScreen(val game: CSSGameJam2022): KtxScreen {
 	fun resumeGame() {
 		game.engine.addSystem(box2DSys)
 		gamePaused = false
+	}
+
+	private fun incrementPlayerTexture() {
+		val playerTextureComp = player.getComp(TextureComp.mapper)
+		playerTextureComp.texture =
+			if (playerTextureComp.texture == game.textureAssets.player1) game.textureAssets.player2
+			else game.textureAssets.player1
+
+		scheduledFunctions.add(ScheduledFunction(100L) { incrementPlayerTexture() })
 	}
 }
