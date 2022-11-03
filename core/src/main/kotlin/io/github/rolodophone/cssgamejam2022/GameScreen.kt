@@ -41,7 +41,7 @@ class GameScreen(val game: CSSGameJam2022): KtxScreen {
 	var gameComplete = false
 	var gamePaused = true
 
-	private val scheduledFunctions = mutableListOf<ScheduledFunction>()
+	val scheduledFunctions = mutableListOf<ScheduledFunction>()
 	private val functionsToSchedule = mutableListOf<ScheduledFunction>()
 
 	override fun show() {
@@ -86,10 +86,10 @@ class GameScreen(val game: CSSGameJam2022): KtxScreen {
 				height = 5f
 				body = game.world.body {
 					position.set(4.25f, 2f)
-					box(width, height, Vector2(width/2f, height/2f)) {
-						isSensor = true
-					}
+					box(width, height, Vector2(width/2f, height/2f))
 					userData = this@entity.entity
+				}.apply {
+					isActive = false
 				}
 			}
 			with<TextureComp> {

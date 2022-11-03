@@ -12,6 +12,7 @@ import ktx.ashley.entity
 import ktx.ashley.with
 import ktx.box2d.body
 import ktx.box2d.box
+import ktx.box2d.revoluteJointWith
 import kotlin.random.Random
 
 class Level(val initOneOff: GameScreen.() -> Unit = {}, val init: GameScreen.() -> Unit = {})
@@ -54,10 +55,10 @@ val levels = listOf(
 					height = WORLD_HEIGHT
 					body = game.world.body {
 						position.setZero()
-						box(width, height, Vector2(width/2f, height/2f)) {
-							isSensor = true //disable collision
-						}
+						box(width, height, Vector2(width/2f, height/2f))
 						userData = this@entity.entity
+					}.apply {
+						isActive = false
 					}
 				}
 				with<TextureComp> {
@@ -145,6 +146,8 @@ val levels = listOf(
 				setTransform(3.8f, 5.5f, 0f)
 				setLinearVelocity(0f, 1f)
 			}
+
+			scheduledFunctions.clear()
 		},
 	),
 	//level 2: moving platforms and barriers get stuck
@@ -198,19 +201,13 @@ val levels = listOf(
 			val hideList = listOf(platforms[1], platforms[4])
 			val hideEntities = {
 				for (entity in hideList) {
-					entity.getComp(BoxBodyComp.mapper).body.fixtureList.forEach {
-						it.isSensor = true
-						it.filterData.categoryBits = 1
-					}
+					entity.getComp(BoxBodyComp.mapper).body.isActive = false
 					game.engine.removeEntity(entity)
 				}
 			}
 			val showEntities = {
 				for (entity in hideList) {
-					entity.getComp(BoxBodyComp.mapper).body.fixtureList.forEach {
-						it.isSensor = false
-						it.filterData.categoryBits = 0b11
-					}
+					entity.getComp(BoxBodyComp.mapper).body.isActive = true
 					game.engine.addEntity(entity)
 				}
 			}
@@ -237,35 +234,49 @@ val levels = listOf(
 			saws[2].getComp(BoxBodyComp.mapper).body.setTransform(5.2f, 8.7f, 0f)
 			saws[3].getComp(BoxBodyComp.mapper).body.setTransform(13.6f, 4.9f, 0f)
 			saws.forEach {
-				it.getComp(BoxBodyComp.mapper).body.isAwake = true
+				it.getComp(BoxBodyComp.mapper).body.apply {
+					linearVelocity = Vector2.Zero
+					isAwake = true
+				}
 			}
 		}
 	),
 	//level 5: skewed platforms and barriers
 	Level(
 		init = {
-			val random = Random(330)
-			(platforms + barriers + movingPlatforms + movingBarriers).forEach {
-				val body = it.getComp(BoxBodyComp.mapper).body
-				body.setTransform(body.position, random.nextFloat() * MathUtils.PI/4f - MathUtils.PI/8f)
-			}
+			platforms //todo
 		}
 	),
-//	Level(
-//		initOneOff = {
-//			val hingePoints = listOf(
-//				Vector2(2.9f, 0.35f)
-//			)
-//
-//			for (indexedEntity in listOf(platforms[2]).withIndex()) {
-//				val body = indexedEntity.value.getComp(BoxBodyComp.mapper).body
-//				body.type = BodyDef.BodyType.DynamicBody
-//				body.isAwake = true
-//				body.revoluteJointWith(background.getComp(BoxBodyComp.mapper).body) {
-//					initialize(bodyA, bodyB, bodyB.position)
-//					collideConnected = false
-//				}
-//			}
-//		}
-//	)
+	//level 6: hinged barriers
+	Level(
+		initOneOff = {
+			val hingePoints = listOf(
+				Vector2(1.35f, 5.55f),
+				Vector2(14.15f, 4.75f)
+			)
+
+			val bgWall = game.world.body {
+				position.setZero()
+				box(WORLD_WIDTH, WORLD_HEIGHT, Vector2(WORLD_WIDTH_HALF, WORLD_HEIGHT_HALF)) {
+					isSensor = true
+				}
+			}
+
+			for (indexedEntity in listOf(barriers[3], barriers[4]).withIndex()) {
+				val body = indexedEntity.value.getComp(BoxBodyComp.mapper).body
+				body.type = BodyDef.BodyType.DynamicBody
+				body.isAwake = true
+				bgWall.revoluteJointWith(body) {
+					initialize(bodyA, bodyB, hingePoints[indexedEntity.index])
+				}
+			}
+		},
+		init = {
+			barriers[3].getComp(BoxBodyComp.mapper).body.setTransform(1.25f, 4.15f, 0f)
+			barriers[4].getComp(BoxBodyComp.mapper).body.setTransform(14.15f, 4.75f, 0f)
+			listOf(barriers[3], barriers[4]).forEach {
+				it.getComp(BoxBodyComp.mapper).body.linearVelocity = Vector2.Zero
+			}
+		}
+	)
 )

@@ -16,6 +16,9 @@ class GameContactListener(
 	override fun beginContact(contact: Contact) {
 		val a = contact.fixtureA
 		val b = contact.fixtureB
+
+		if (a.body.userData == null || b.body.userData == null) return
+
 		val entityA = a.body.userData as Entity
 		val entityB = b.body.userData as Entity
 
@@ -48,6 +51,8 @@ class GameContactListener(
 	}
 
 	override fun endContact(contact: Contact) {
+		if (contact.fixtureA.body.userData == null || contact.fixtureB.body.userData == null) return
+
 		if (contact.fixtureA.userData == 0 && (contact.fixtureB.body.userData as Entity).hasTag(Tag.GROUND) ||
 				contact.fixtureB.userData == 0 && (contact.fixtureA.body.userData as Entity).hasTag(Tag.GROUND)) {
 			//player foot left platform
