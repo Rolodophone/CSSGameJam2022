@@ -207,7 +207,7 @@ val levels = listOf(
 	),
 	Level(
 		init = {
-			val random = Random(328)
+			val random = Random(330)
 			(platforms + barriers + movingPlatforms + movingBarriers).forEach {
 				val body = it.getComp(BoxBodyComp.mapper).body
 				body.setTransform(body.position, random.nextFloat() * MathUtils.PI/4f - MathUtils.PI/8f)
