@@ -28,7 +28,7 @@ val levels = listOf(
 					name = "Processor"
 					tags = mutableSetOf(InfoComp.Tag.DOOR)
 				}
-				with<BoxBodyComp> {
+				val boxBodyComp = with<BoxBodyComp> {
 					width = 1.05f
 					height = 1.05f
 					body = game.world.body {
@@ -43,27 +43,9 @@ val levels = listOf(
 					texture = game.textureAssets.processor
 					z = -10
 				}
-			}
-
-			background = game.engine.entity {
-				with<InfoComp> {
-					name = "Background"
-					tags = mutableSetOf(InfoComp.Tag.BACKGROUND)
-				}
-				with<BoxBodyComp> {
-					width = WORLD_WIDTH
-					height = WORLD_HEIGHT
-					body = game.world.body {
-						position.setZero()
-						box(width, height, Vector2(width/2f, height/2f))
-						userData = this@entity.entity
-					}.apply {
-						isActive = false
-					}
-				}
-				with<TextureComp> {
-					texture = game.textureAssets.background
-					z = -20
+				with<LightComp> {
+					addLightToBody(PointLight(game.rayHandler, 80, Color(0.75f, 0.75f, 0.5f, 0.75f), 2f, 0f, 0f),
+							boxBodyComp, boxBodyComp.width/2f, boxBodyComp.height/2f)
 				}
 			}
 
@@ -105,17 +87,6 @@ val levels = listOf(
 			)
 			leds = listOf()
 
-			PointLight(game.rayHandler, 200, Color(0.75f, 0.75f, 0.5f, 0.75f), 7f, 0f, 0f).apply {
-				val playerBoxBodyComp = player.getComp(BoxBodyComp.mapper)
-				attachToBody(playerBoxBodyComp.body, playerBoxBodyComp.width/2f, playerBoxBodyComp.height/2f)
-				setContactFilter(1, 0, 0b10)
-			}
-			PointLight(game.rayHandler, 200, Color(0.75f, 0.75f, 0.5f, 0.75f), 3f, 0f, 0f).apply {
-				val processorBoxBodyComp = processor.getComp(BoxBodyComp.mapper)
-				attachToBody(processorBoxBodyComp.body, processorBoxBodyComp.width/2f, processorBoxBodyComp.height/2f)
-				setContactFilter(1, 0, 0b10)
-			}
-
 			playerSys = PlayerSys(this, player)
 			game.engine.addSystem(playerSys)
 
@@ -148,6 +119,16 @@ val levels = listOf(
 			}
 
 			scheduledFunctions.clear()
+
+			fun incrementPlayerTexture() {
+				val playerTextureComp = player.getComp(TextureComp.mapper)
+				playerTextureComp.texture =
+					if (playerTextureComp.texture == game.textureAssets.player1) game.textureAssets.player2
+					else game.textureAssets.player1
+
+				scheduleFunction(100L) { incrementPlayerTexture() }
+			}
+			scheduleFunction(100L) { incrementPlayerTexture() }
 		},
 	),
 	//level 2: moving platforms and barriers get stuck
@@ -202,12 +183,14 @@ val levels = listOf(
 			val hideEntities = {
 				for (entity in hideList) {
 					entity.getComp(BoxBodyComp.mapper).body.isActive = false
+					entity.getComp(LightComp.mapper).disableLights()
 					game.engine.removeEntity(entity)
 				}
 			}
 			val showEntities = {
 				for (entity in hideList) {
 					entity.getComp(BoxBodyComp.mapper).body.isActive = true
+					entity.getComp(LightComp.mapper).enableLights()
 					game.engine.addEntity(entity)
 				}
 			}

@@ -1,82 +1,110 @@
 
 textures.png
-size: 1024, 256
+size: 2048, 256
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
-background
+background1
   rotate: false
-  xy: 2, 24
+  xy: 2, 39
+  size: 320, 180
+  orig: 320, 180
+  offset: 0, 0
+  index: -1
+background2
+  rotate: false
+  xy: 968, 39
+  size: 320, 180
+  orig: 320, 180
+  offset: 0, 0
+  index: -1
+background3
+  rotate: false
+  xy: 324, 39
+  size: 320, 180
+  orig: 320, 180
+  offset: 0, 0
+  index: -1
+background4
+  rotate: false
+  xy: 1290, 39
+  size: 320, 180
+  orig: 320, 180
+  offset: 0, 0
+  index: -1
+background5
+  rotate: false
+  xy: 646, 39
   size: 320, 180
   orig: 320, 180
   offset: 0, 0
   index: -1
 barrier
   rotate: false
-  xy: 932, 174
+  xy: 1916, 181
   size: 4, 30
   orig: 4, 30
   offset: 0, 0
   index: -1
 dialog_crash
   rotate: false
-  xy: 780, 104
+  xy: 1764, 17
   size: 150, 100
   orig: 150, 100
   offset: 0, 0
   index: -1
 dialog_error
   rotate: false
-  xy: 324, 104
+  xy: 1612, 119
   size: 150, 100
   orig: 150, 100
   offset: 0, 0
   index: -1
 dialog_fail
   rotate: false
-  xy: 476, 104
+  xy: 1764, 119
   size: 150, 100
   orig: 150, 100
   offset: 0, 0
   index: -1
 dialog_init
   rotate: false
-  xy: 628, 104
+  xy: 1612, 17
   size: 150, 100
   orig: 150, 100
   offset: 0, 0
   index: -1
 led
   rotate: false
-  xy: 44, 20
+  xy: 1958, 217
   size: 2, 2
   orig: 2, 2
   offset: 0, 0
   index: -1
 platform
   rotate: false
-  xy: 2, 16
+  xy: 1916, 213
   size: 40, 6
   orig: 40, 6
   offset: 0, 0
   index: -1
 player1
   rotate: false
-  xy: 347, 88
+  xy: 1922, 197
   size: 8, 14
   orig: 8, 14
   offset: 0, 0
   index: -1
 player2
   rotate: false
-  xy: 324, 65
+  xy: 25, 23
   size: 8, 14
   orig: 8, 14
   offset: 0, 0
   index: -1
 processor
   rotate: false
-  xy: 324, 81
+  xy: 2, 16
   size: 21, 21
   orig: 21, 21
   offset: 0, 0

@@ -1,13 +1,12 @@
 package io.github.rolodophone.cssgamejam2022
 
+import box2dLight.PointLight
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.utils.TimeUtils
-import io.github.rolodophone.cssgamejam2022.comp.BoxBodyComp
-import io.github.rolodophone.cssgamejam2022.comp.InfoComp
-import io.github.rolodophone.cssgamejam2022.comp.PlayerComp
-import io.github.rolodophone.cssgamejam2022.comp.TextureComp
+import io.github.rolodophone.cssgamejam2022.comp.*
 import io.github.rolodophone.cssgamejam2022.sys.Box2DSys
 import io.github.rolodophone.cssgamejam2022.sys.PlayerSys
 import ktx.app.KtxScreen
@@ -21,7 +20,11 @@ class GameScreen(val game: CSSGameJam2022): KtxScreen {
 
 	lateinit var player: Entity
 	lateinit var processor: Entity
-	lateinit var background: Entity
+	lateinit var background1: Entity
+	lateinit var background2: List<Entity>
+	lateinit var background3: List<Entity>
+	lateinit var background4: List<Entity>
+	lateinit var background5: List<Entity>
 	lateinit var barriers: List<Entity>
 	lateinit var movingBarriers: List<Entity>
 	lateinit var movingPlatforms: List<Entity>
@@ -52,7 +55,7 @@ class GameScreen(val game: CSSGameJam2022): KtxScreen {
 				name = "Player"
 				tags = mutableSetOf(InfoComp.Tag.PLAYER)
 			}
-			with<BoxBodyComp> {
+			val boxBodyComp = with<BoxBodyComp> {
 				width = 0.4f
 				height = 0.7f
 				body = game.world.body {
@@ -72,6 +75,12 @@ class GameScreen(val game: CSSGameJam2022): KtxScreen {
 				texture = game.textureAssets.player1
 			}
 			with<PlayerComp>()
+			with<LightComp> {
+				addLightToBody(
+					PointLight(game.rayHandler, 160, Color(0.75f, 0.75f, 0.5f, 0.75f), 1f, 0f, 0f),
+					boxBodyComp, boxBodyComp.width/2f, boxBodyComp.height/2f
+				)
+			}
 		}
 
 		levels[1].initOneOff(this)
@@ -99,14 +108,39 @@ class GameScreen(val game: CSSGameJam2022): KtxScreen {
 
 		game.renderSys.dialog = dialog
 
-		//player animation
-		scheduleFunction(100L) { incrementPlayerTexture() }
+		background1 = game.engine.entity {
+			with<InfoComp> {
+				name = "Background1"
+				tags = mutableSetOf(InfoComp.Tag.BACKGROUND)
+			}
+			with<BoxBodyComp> {
+				width = WORLD_WIDTH
+				height = WORLD_HEIGHT
+				body = game.world.body {
+					position.setZero()
+					box(width, height, Vector2(width/2f, height/2f))
+					userData = this@entity.entity
+				}.apply {
+					isActive = false
+				}
+			}
+			with<TextureComp> {
+				texture = game.textureAssets.background1
+				z = -20
+			}
+		}
+
+		background2 = entityPresets.scrollingBackground(2, 0.2f)
+		background3 = entityPresets.scrollingBackground(3, 0.3f)
+		background4 = entityPresets.scrollingBackground(4, 0.4f)
+		background5 = entityPresets.scrollingBackground(5, 0.5f)
 	}
 
 	override fun render(delta: Float) {
 		if (!gamePaused) {
 			if (player.getComp(BoxBodyComp.mapper).y < -0.7f) failLevel()
 
+			//handle scheduled functions
 			val scheduledFunctionsToRemove = mutableListOf<ScheduledFunction>()
 			for (scheduledFunction in scheduledFunctions) {
 				if (TimeUtils.millis() > scheduledFunction.millisScheduled) {
@@ -119,6 +153,14 @@ class GameScreen(val game: CSSGameJam2022): KtxScreen {
 			scheduledFunctions.addAll(functionsToSchedule)
 			functionsToSchedule.forEach { it.schedule() }
 			functionsToSchedule.clear()
+
+			//update background
+			for (scrollingBackground in (background2 + background3 + background4 + background5)) {
+				val body = scrollingBackground.getComp(BoxBodyComp.mapper).body
+				if (body.position.y < -WORLD_HEIGHT) {
+					body.setTransform(body.position.x, body.position.y + WORLD_HEIGHT*3f, 0f)
+				}
+			}
 		}
 	}
 
@@ -193,14 +235,5 @@ class GameScreen(val game: CSSGameJam2022): KtxScreen {
 
 	fun scheduleFunction(millisUntil: Long, function: () -> Unit) {
 		functionsToSchedule.add(ScheduledFunction(millisUntil, function))
-	}
-
-	private fun incrementPlayerTexture() {
-		val playerTextureComp = player.getComp(TextureComp.mapper)
-		playerTextureComp.texture =
-			if (playerTextureComp.texture == game.textureAssets.player1) game.textureAssets.player2
-			else game.textureAssets.player1
-
-		scheduleFunction(100L) { incrementPlayerTexture() }
 	}
 }

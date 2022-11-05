@@ -1,5 +1,6 @@
 package io.github.rolodophone.cssgamejam2022
 
+import box2dLight.Light
 import box2dLight.RayHandler
 import com.badlogic.ashley.core.Engine
 import com.badlogic.gdx.Gdx
@@ -61,9 +62,10 @@ class CSSGameJam2022 : KtxGame<KtxScreen>() {
 		world = createWorld(gravity = Vector2(0f, -20f))
 		box2DDebugRenderer = Box2DDebugRenderer()
 
+		Light.setGlobalContactFilter(1, 0, 0b10)
 		rayHandler = RayHandler(world)
 		rayHandler.setAmbientLight(0.3f)
-		rayHandler.setBlurNum(3)
+		rayHandler.setBlurNum(1)
 
 		engine = Engine()
 		debugSys = DebugSys(this)
